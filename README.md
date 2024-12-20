@@ -58,13 +58,6 @@ DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
-## Testing
-
-To run the test suite:
-```bash
-python manage.py test
-```
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
