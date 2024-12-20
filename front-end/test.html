@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <link rel="stylesheet" href="css/navbar.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .left-panel {
+            flex: 2;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .saved-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .saved-btn img {
+            width: 30px;
+            height: 30px;
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .saved-btn.saved img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .mark-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .mark-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .right-panel {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .test-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-calculator {
+            background-color: #2e3a59;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-calculator:hover {
+            background-color: #1c2b42;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background-color: #2e3a59;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+
+        .pagination button:hover {
+            background-color: #1c2b42;
+        }
+
+        .pagination .marked-btn {
+            background-color: #ff4500;
+        }
+
+        iframe.calculator {
+            width: 100%;
+            height: 300px;
+            border: none;
+            display: none;
+        }
+
+        .marked {
+            text-decoration: line-through;
+            color: red;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .active-question {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="home.html">
+        <div class="navbar">
+            <div class="logo-container">
+                <img src="images/main/logo.jpg" alt="Logo" class="logo">
+                <div class="logo-text">The Teacher</div>
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            </div>
+            <div class="nav-links">
+                <a href="practices.html">Home</a>
+                <a href="#about">About</a>
+                <a href="home.html#service-menu">Services</a>
+                <a href="#login">Login</a>
+                <a href="#video">Video</a>
+                <a href="#events">Events</a>
+                <a href="#team">Team</a>
+                <a href="home.html#contact-menu">Contact</a>
+            </div>
+        </div>
+    </a>
+
+    <div class="container">
+        <div class="left-panel">
+            <!-- Question 1 -->
+            <div id="question-1" class="question-container active-question">
+                <p class="question">1. What is the capital of France?
+                    <button id="saved-btn-1" class="saved-btn" onclick="toggleSaved(1)">
+                        <img id="saved-img-1" src="https://img.icons8.com/ios/50/bookmark-ribbon--v1.png" alt="bookmark">
+                    </button>
+                </p>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="question1" id="option1" value="A">
+                        A. Madrid
+                        <button class="mark-btn" onclick="markOption('option1', 'saved-btn-1', 1)">Mark</button>
+                    </li>
+                    <li>
+                        <input type="radio" name="question1" id="option2" value="B">
+                        B. Paris
+                        <button class="mark-btn" onclick="markOption('option2', 'saved-btn-1', 1)">Mark</button>
+                    </li>
+                    <li>
+                        <input type="radio" name="question1" id="option3" value="C">
+                        C. Rome
+                        <button class="mark-btn" onclick="markOption('option3', 'saved-btn-1', 1)">Mark</button>
+                    </li>
+                    <li>
+                        <input type="radio" name="question1" id="option4" value="D">
+                        D. Berlin
+                        <button class="mark-btn" onclick="markOption('option4', 'saved-btn-1', 1)">Mark</button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 2 -->
+            <div id="question-2" class="question-container">
+                <p class="question">2. What is the capital of Italy?
+                    <button id="saved-btn-2" class="saved-btn" onclick="toggleSaved(2)">
+                        <img id="saved-img-2" src="https://img.icons8.com/ios/50/bookmark-ribbon--v1.png" alt="bookmark">
+                    </button>
+                </p>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="question2" id="option5" value="A">
+                        A. Madrid
+                        <button class="mark-btn" onclick="markOption('option5', 'saved-btn-2', 2)">Mark</button>
+                    </li>
+                    <li>
+                        <input type="radio" name="question2" id="option6" value="B">
+                        B. Paris
+                        <button class="mark-btn" onclick="markOption('option6', 'saved-btn-2', 2)">Mark</button>
+                    </li>
+                    <li>
+                        <input type="radio" name="question2" id="option7" value="C">
+                        C. Rome
+                        <button class="mark-btn" onclick="markOption('option7', 'saved-btn-2', 2)">Mark</button>
+                    </li>
+                    <li>
+                        <input type="radio" name="question2" id="option8" value="D">
+                        D. Berlin
+                        <button class="mark-btn" onclick="markOption('option8', 'saved-btn-2', 2)">Mark</button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button onclick="prevQuestion()">Previous</button>
+                <div id="pagination-buttons"></div>
+                <button onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <img src="https://via.placeholder.com/300x200" alt="Test Image" class="test-image">
+            <button class="btn-calculator" onclick="toggleCalculator()">Open Calculator</button>
+            <iframe class="calculator" src="https://www.desmos.com/scientific"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 2;
+
+        // Initialize pagination on page load
+        window.onload = function () {
+            const paginationContainer = document.getElementById('pagination-buttons');
+
+            // Get the saved questions from localStorage
+            const savedOptions = JSON.parse(localStorage.getItem('markedOptions')) || [];
+
+            // Create pagination buttons
+            for (let i = 1; i <= totalQuestions; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.id = `pagination-btn-${i}`;
+                button.onclick = function () { goToPage(i); };
+                paginationContainer.appendChild(button);
+
+                // Ensure only the active question is marked as 'red' (for saved questions)
+                if (savedOptions.includes(`question-${i}`) && i === currentQuestion) {
+                    button.classList.add('marked-btn');
+                }
+            }
+
+            // Go to the first question by default
+            goToPage(1);
+        };
+
+        function goToPage(pageNumber) {
+            // Hide all questions
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question-${i}`).classList.remove('active-question');
+            }
+            // Show selected question
+            document.getElementById(`question-${pageNumber}`).classList.add('active-question');
+            currentQuestion = pageNumber;
+
+            // Update the pagination button color based on which question is active
+            updatePaginationColors();
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) goToPage(currentQuestion - 1);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) goToPage(currentQuestion + 1);
+        }
+
+        function markOption(optionId, savedLabelId, questionNumber) {
+            const option = document.getElementById(optionId).parentElement;
+            const savedLabel = document.getElementById(savedLabelId);
+            const markedOptions = JSON.parse(localStorage.getItem('markedOptions')) || [];
+
+            if (option.classList.contains('marked')) {
+                option.classList.remove('marked');
+                savedLabel.classList.remove('saved');
+                const index = markedOptions.indexOf(optionId);
+                if (index > -1) markedOptions.splice(index, 1);
+            } else {
+                option.classList.add('marked');
+                savedLabel.classList.add('saved');
+                markedOptions.push(`question-${questionNumber}`);
+            }
+
+            localStorage.setItem('markedOptions', JSON.stringify(markedOptions));
+
+            // Update the pagination button for this question
+            updatePaginationColors();
+        }
+
+        function updatePaginationColors() {
+            const paginationButtons = document.querySelectorAll('.pagination button');
+            const savedOptions = JSON.parse(localStorage.getItem('markedOptions')) || [];
+
+            paginationButtons.forEach(button => {
+                const pageNumber = parseInt(button.textContent);
+                // Reset all buttons to default state
+                button.classList.remove('marked-btn');
+
+                // Mark the button red if the question is saved and it is the active one
+                if (savedOptions.includes(`question-${pageNumber}`) && currentQuestion === pageNumber) {
+                    button.classList.add('marked-btn');
+                }
+            });
+        }
+
+        function toggleSaved(questionNumber) {
+            const savedBtn = document.getElementById(`saved-btn-${questionNumber}`);
+            const savedImg = savedBtn.querySelector('img');
+
+            savedBtn.classList.toggle('saved');
+            savedImg.src = savedBtn.classList.contains('saved') ? "https://img.icons8.com/ios-filled/100/bookmark-ribbon.png" : "https://img.icons8.com/ios/50/bookmark-ribbon--v1.png";
+
+            // Update the saved state in localStorage
+            const savedOptions = JSON.parse(localStorage.getItem('markedOptions')) || [];
+            if (savedBtn.classList.contains('saved')) {
+                savedOptions.push(`question-${questionNumber}`);
+            } else {
+                const index = savedOptions.indexOf(`question-${questionNumber}`);
+                if (index > -1) savedOptions.splice(index, 1);
+            }
+            localStorage.setItem('markedOptions', JSON.stringify(savedOptions));
+
+            // Update the pagination button color (red when saved, default when unsaved)
+            updatePaginationColors();
+        }
+
+        function toggleCalculator() {
+            const calculator = document.querySelector('.calculator');
+            calculator.style.display = calculator.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+
+</body>
+
+</html>

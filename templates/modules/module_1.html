@@ -1,0 +1,490 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Quiz Application</title>
+  <link rel="stylesheet" href="{% static 'css/test-v2.css' %}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<style>
+  /* Main Styles */
+  .pagination {
+    font-size: 0.8rem;
+    margin-top: 20px;
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    gap: 5px;
+    margin: 0;
+    flex-wrap: wrap;
+  }
+
+  .page-item {
+    font-size: 0.8rem;
+    margin: 0 5px;
+    display: inline-block;
+    border-radius: 50px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .page-link {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    color: #007bff;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .page-item.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+  }
+
+  .page-item:hover {
+    background-color: #f1f1f1;
+  }
+
+  .page-link:hover {
+    background-color: #007bff;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 768px) {
+    .pagination-wrapper {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      background-color: white;
+      padding: 10px 0;
+      box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+    }
+
+    .pagination {
+      font-size: 0.75rem;
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pagination-wrapper {
+      font-size: 0.7rem;
+      flex-direction: column;
+    }
+
+    .pagination {
+      font-size: 0.7rem;
+    }
+
+    .pagination-wrapper {
+      flex-direction: column;
+    }
+
+    .page-link {
+      padding: 6px 12px;
+    }
+  }
+
+  .navigation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .nav-btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .nav-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  .nav-btn:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+
+  .finish {
+    background-color: #28a745;
+  }
+
+  .finish:hover {
+    background-color: #218838;
+  }
+
+  .nav-btn i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-btn:hover i {
+    transform: rotate(5deg);
+  }
+
+  @media (max-width: 768px) {
+    .nav-btn {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+  }
+
+  /* Image Modal Styles */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+</style>
+
+<body>
+  <div class="quiz-container">
+    <header class="quiz-header">
+      <div class="quiz-info">
+        <h1>Section - 1</h1>
+        <div class="progress-info">
+          <span class="section-title">Section 1: Reading and Writing</span>
+          <div class="timer" id="timer">32:00</div>
+        </div>
+      </div>
+
+      <footer class="quiz-footer">
+        <form id="quizForm" action="/tests/submit-quiz/{{ practice.id }}/module/1/" method="POST"> {% csrf_token %}
+          <div class="navigation-buttons">
+            <nav aria-label="...">
+              <ul class="pagination pagination-lg" id="pagination"></ul>
+            </nav>
+          </div>
+        </form>
+
+        <div class="navigation-buttons">
+          <button id="prevBtn" class="nav-btn">
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+
+          <form id="quizForm" action="/tests/submit-quiz/{{ practice.id }}/module/1/" method="POST"> {% csrf_token %}
+
+            <button id="finishBtn" type="submit" class="nav-btn finish submit-button">
+              <i class="fas fa-check-circle"></i> Finish Test
+            </button>
+          </form>
+
+          <button id="nextBtn" class="nav-btn">
+            <i class="fas fa-chevron-right"></i> Next
+          </button>
+        </div>
+      </footer>
+    </header>
+
+    <main class="quiz-content">
+      <div class="question-wrapper">
+        <div class="question-header">
+          <span class="question-number">Question <span id="currentQuestionNum">1</span> of <span
+              id="totalQuestionsNum"></span></span>
+          <img id="bookmarkIcon" src="https://img.icons8.com/ios/50/bookmark-ribbon--v1.png" alt="Bookmark"
+            style="cursor: pointer;">
+        </div>
+        <div class="content-wrapper">
+          <div class="question-image">
+            <img id="questionImage" src="" alt="Question Image" style="display: none; cursor: pointer;">
+          </div>
+          <div class="question-content">
+            <p id="questionText" class="question-text">Your question will appear here</p>
+            <div class="options" id="options"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal to display enlarged image -->
+    <div id="imageModal" class="modal">
+      <img id="modalImage" class="modal-content" src="" alt="Enlarged Image">
+    </div>
+
+  </div>
+
+
+  <script>
+    let currentQuestion = 0;
+    const answers = {};
+    const bookmarkedQuestions = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+  
+    const questions = [
+      {% for question in questions %}
+      {
+        questionText: "{{ question.term }}",
+        image: "{{ question.image.url }}",
+        options: [
+          {% if question.option_a or question.option_b or question.option_c or question.option_d %}
+          "A) {{ question.option_a }}",
+          "B) {{ question.option_b }}",
+          "C) {{ question.option_c }}",
+          "D) {{ question.option_d }}",
+          {% else %}
+          "input",
+          {% endif %}
+        ],
+      },
+      {% endfor %}
+    ];
+  
+    const totalQuestions = questions.length;
+    document.getElementById('totalQuestionsNum').innerText = totalQuestions;
+  
+    function loadSavedAnswers(practiceId) {
+      const savedAnswers = JSON.parse(localStorage.getItem(`quizAnswers_${practiceId}`)) || {};
+      Object.keys(savedAnswers).forEach(questionIndex => {
+        answers[questionIndex] = savedAnswers[questionIndex];
+      });
+    }
+  
+    function saveAnswers(practiceId) {
+      localStorage.setItem(`quizAnswers_${practiceId}`, JSON.stringify(answers));
+    }
+  
+    function startTimer() {
+      let remainingTime = 32 * 60; // 32 daqiqa (32*60 sekund)
+  
+      let timerInterval = setInterval(() => {
+        if (remainingTime <= 0) {
+          clearInterval(timerInterval);  // Intervalni to'xtatamiz
+          document.getElementById('timer').innerText = '00:00'; // 00:00 ko'rsatiladi
+          submitQuizAndMoveToNextModule();
+          return;
+        }
+  
+        remainingTime--; // Har bir sekundda kamaytirish
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        document.getElementById('timer').innerText = formattedTime; // Timerni yangilash
+      }, 1000);
+    }
+  
+    function submitQuizAndMoveToNextModule() {
+      document.getElementById('finishBtn').click();
+    }
+  
+    function loadQuestion() {
+      const question = questions[currentQuestion];
+      document.getElementById("questionText").innerText = question.questionText;
+  
+      const questionImage = document.getElementById("questionImage");
+      if (question.image && question.image !== "") {
+        questionImage.src = question.image;
+        questionImage.style.display = "block";
+      } else {
+        questionImage.style.display = "none";
+      }
+  
+      const options = document.getElementById("options");
+      options.innerHTML = '';
+  
+      if (question.options[0] === "input") {
+        const inputElement = document.createElement('div');
+        inputElement.classList.add('option');
+        inputElement.innerHTML = `
+          <input type="text" name="inputAnswer" id="inputAnswer" value="${answers[currentQuestion] || ''}">
+          <label for="inputAnswer">Your Answer:</label>
+        `;
+        inputElement.querySelector('input').addEventListener('input', () => {
+          answers[currentQuestion] = inputElement.querySelector('input').value;
+          saveAnswers(practiceId);
+        });
+        options.appendChild(inputElement);
+      } else {
+        question.options.forEach((option, index) => {
+          const optionElement = document.createElement('div');
+          optionElement.classList.add('option');
+          optionElement.innerHTML = `
+            <input type="radio" name="answer" id="option${index}" value="${option.charAt(0)}" ${answers[currentQuestion] === option.charAt(0) ? 'checked' : ''}>
+            <label for="option${index}">
+              <span class="option-letter">${option.charAt(0)}</span>
+              <span class="option-text">${option.slice(3)}</span>
+            </label>
+          `;
+          optionElement.querySelector('input').addEventListener('change', () => {
+            selectAnswer(option.charAt(0));
+          });
+          options.appendChild(optionElement);
+        });
+      }
+  
+      document.getElementById("currentQuestionNum").innerText = currentQuestion + 1;
+      updatePagination();
+      updateBookmarkIcon();
+    }
+  
+    function updatePagination() {
+      const paginationContainer = document.getElementById('pagination');
+      paginationContainer.innerHTML = '';
+  
+      for (let i = 0; i < totalQuestions; i++) {
+        const pageItem = document.createElement('li');
+        pageItem.classList.add('page-item');
+        if (i === currentQuestion) {
+          pageItem.classList.add('active');
+        }
+  
+        const pageLink = document.createElement('a');
+        pageLink.classList.add('page-link');
+        pageLink.href = "#";
+        pageLink.innerText = i + 1;
+        pageLink.addEventListener('click', () => {
+          currentQuestion = i;
+          loadQuestion();
+        });
+  
+        pageItem.appendChild(pageLink);
+        paginationContainer.appendChild(pageItem);
+      }
+    }
+  
+    function selectAnswer(answer) {
+      const options = document.querySelectorAll('.option input[type="radio"]');
+      options.forEach(option => {
+        option.checked = false;
+      });
+  
+      const selectedOption = document.querySelector(`input[type="radio"][value="${answer}"]`);
+      if (selectedOption) {
+        selectedOption.checked = true;
+      }
+  
+      answers[currentQuestion] = answer;
+      saveAnswers(practiceId);
+    }
+  
+    function updateBookmarkIcon() {
+      const question = questions[currentQuestion];
+      const isBookmarked = bookmarkedQuestions.some(q => q.questionText === question.questionText);
+  
+      const bookmarkIcon = document.getElementById("bookmarkIcon");
+      bookmarkIcon.src = isBookmarked
+        ? "https://img.icons8.com/ios-filled/50/bookmark-ribbon.png"
+        : "https://img.icons8.com/ios/50/bookmark-ribbon--v1.png";
+    }
+  
+    function toggleBookmark() {
+      const question = questions[currentQuestion];
+      const index = bookmarkedQuestions.findIndex(q => q.questionText === question.questionText);
+  
+      if (index === -1) {
+        bookmarkedQuestions.push(question);
+      } else {
+        bookmarkedQuestions.splice(index, 1);
+      }
+  
+      localStorage.setItem('bookmarkedQuestions', JSON.stringify(bookmarkedQuestions));
+      updateBookmarkIcon();
+    }
+  
+    document.getElementById("bookmarkIcon").addEventListener('click', toggleBookmark);
+  
+    function enlargeImage() {
+      const image = document.getElementById('questionImage');
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+  
+      modal.style.display = 'flex';
+      modalImage.src = image.src;
+    }
+  
+    document.getElementById('imageModal').addEventListener('click', () => {
+      document.getElementById('imageModal').style.display = 'none';
+    });
+  
+    document.getElementById('questionImage').addEventListener('click', enlargeImage);
+  
+    document.getElementById("nextBtn").addEventListener('click', () => {
+      if (currentQuestion < totalQuestions - 1) {
+        currentQuestion++;
+        loadQuestion();
+      }
+    });
+  
+    document.getElementById("prevBtn").addEventListener('click', () => {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
+      }
+    });
+  
+    const practiceId = "{{ practice.id }}";
+    loadSavedAnswers(practiceId);
+    startTimer();
+    loadQuestion();
+  
+    // Only one event listener for finish button
+    document.getElementById("finishBtn").addEventListener("click", function (e) {
+      e.preventDefault(); // Prevent form submission
+  
+      fetch(`/tests/submit-quiz/${practiceId}/module/1/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+        },
+        body: JSON.stringify({
+          answers: answers
+        }),
+      })
+        .then(response => response.ok ? response.json() : Promise.reject('Error'))
+        .then(data => {
+          alert("Answers submitted successfully!");
+          window.location.href = `/tests/practice/${practiceId}/2/`;
+        })
+        .catch(error => {
+          console.error("Error submitting answers:", error);
+          alert("Failed to submit answers. Please try again.");
+        });
+    });
+  </script>
+  
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Gallery</title>
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/videos.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <a href="home.html">
+        <div class="navbar">
+            <div class="logo-container">
+                <img src="images/main/logo.jpg" alt="Logo" class="logo">
+                <div class="logo-text">The Teacher</div>
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            </div>
+            <div class="nav-links">
+                <a href="practices.html">Home</a>
+                <a href="#about">About</a>
+                <a href="home.html#service-menu">Services</a>
+                <a href="#login">Login</a>
+                <a href="#video">Video</a>
+                <a href="#events">Events</a>
+                <a href="#team">Team</a>
+                <a href="home.html#contact-menu">Contact</a>
+            </div>
+        </div>
+    </a>
+    <!-- End Navbar -->
+
+    <!-- Video Section -->
+    <div class="video-section">
+        <h1>Video Tutorials</h1>
+        <div class="video-grid">
+            <!-- Video Card 1 -->
+            <div class="video-card">
+                <img src="https://sat800makon.uz/static/assets/img/blog/blog-3.jpg" alt="Video Thumbnail"
+                    class="video-thumbnail">
+                <div class="video-info">
+                    <h3>Video Title 1</h3>
+                    <p>Short description of the video content.</p>
+                    <button class="btn-watch">Watch Now</button>
+                </div>
+            </div>
+            <!-- End Video Card -->
+
+            <!-- Video Card 2 -->
+            <div class="video-card">
+                <img src="https://sat800makon.uz/static/assets/img/blog/blog-3.jpg" alt="Video Thumbnail"
+                    class="video-thumbnail">
+                <div class="video-info">
+                    <h3>Video Title 2</h3>
+                    <p>Another brief description of the video content.</p>
+                    <button class="btn-watch">Watch Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+    }
+
+    /* Navbar */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background-color: #2e3a59;
+        color: #fff;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo {
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+    }
+
+    .logo-text {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 1em;
+    }
+
+    /* Video Section */
+    .video-section {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .video-section h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .video-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-thumbnail {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .video-info {
+        padding: 15px;
+        text-align: left;
+    }
+
+    .video-info h3 {
+        font-size: 1.2em;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .video-info p {
+        font-size: 1em;
+        color: #777;
+        margin-bottom: 15px;
+    }
+
+    .btn-watch {
+        display: inline-block;
+        background-color: #2e3a59;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-watch:hover {
+        background-color: #1c2b42;
+    }
+</style>

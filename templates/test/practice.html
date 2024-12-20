@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Teacher</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/practices.css' %}">
+</head>
+
+<body>
+    <!-- Title Section -->
+    <div class="title-section">
+        <h1>Practices</h1>
+    </div>
+
+    <!-- Practice Cards Section -->
+    <div class="card-container">
+        {% for practice in practice %}
+        
+            <div class="card">
+                <img src="{{ practice.image.url }}" alt="Image">
+                <a href="{% url 'module_1' practice.pk %}"><h3>{{ practice.name }}</h3></a>
+                <p class="card-text">
+                    Started: {{ practice.start_date|date:"d F Y" }}<br>
+                </p>
+                <a href="{% url 'ranks' practice.pk %}"><button class="btn-rank">Rankings</button></a>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{% static 'js/navbar.js' %}"></script>
+</body>
+
+</html>
+{% endblock content %}
