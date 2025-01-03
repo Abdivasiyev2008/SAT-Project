@@ -9,17 +9,315 @@
     <title>The Teacher</title>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
-
-
 <style>
-    body, .hero, .navbar, .service-item, .contact-section, footer, .navbar .nav-links {
+    /* Global Styling */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        overflow-x: hidden;
+        background-color: #56282a;
+        /* Unified background color */
+    }
+
+    .hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+        background-color: #703d3f;
+        /* Consistent hero section color */
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    .navbar {
+        background-color: #3a1c1e;
+        /* Consistent navbar color */
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    .navbar .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    .navbar .nav-links a:hover {
+        color: #d6a5a5;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    .hero-text p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin: 10px 0;
+    }
+
+    .hero-illustration img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .cta-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #fff;
+        color: #56282a;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-transform: uppercase;
+        margin-top: 15px;
+    }
+
+    .cta-button:hover {
+        background-color: #d6a5a5;
+        color: #fff;
+    }
+
+    .services-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .service-card {
+        flex: 1;
+        max-width: 280px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #4a2c2e;
+        /* Harmonized service card background */
+        margin: 10px;
+    }
+
+    .service-card img {
+        margin-bottom: 10px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .service-card h3 {
+        font-size: 1.1rem;
+        margin: 10px 0;
+    }
+
+    .info-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        background-color: #703d3f;
+        /* Consistent info section background */
+        gap: 20px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .info-card {
+        width: 280px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #4a2c2e;
+        /* Harmonized info card background */
+        margin: 10px;
+    }
+
+    .info-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .info-card p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .services-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .service-item {
+        width: 280px;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        background-color: #4a2c2e;
+        /* Harmonized service item background */
+        margin: 10px;
+    }
+
+    .service-heading {
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
+    .contact-section {
+        padding: 20px;
+        text-align: center;
+        background-color: #56282a;
+        /* Unified contact section color */
+    }
+
+    .contact-card {
+        width: 280px;
+        text-align: center;
+        border-radius: 10px;
+        background-color: #4a2c2e;
+        /* Harmonized contact card background */
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px;
+        background-color: #3a1c1e;
+        color: #fff;
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero {
+            flex-direction: column;
+        }
+
+        .hero-text h1 {
+            font-size: 1.8rem;
+        }
+
+        .cta-button {
+            font-size: 0.9rem;
+            padding: 8px 16px;
+        }
+
+        .services-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        .service-card {
+            width: 100%;
+            max-width: 260px;
+            padding: 15px;
+            margin: 10px auto;
+        }
+
+        .info-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .services-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            padding: 30px 10px;
+            flex-direction: column;
+        }
+
+        .hero-text h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero-illustration img {
+            display: none;
+        }
+
+        .cta-button {
+            font-size: 0.8rem;
+        }
+
+        .services-container {
+            flex-direction: column;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .service-card {
+            width: 100%;
+            max-width: 240px;
+            padding: 10px;
+            margin: 10px auto;
+        }
+
+        footer {
+            flex-direction: column;
+            text-align: center;
+            width: 100vw;
+            /* Full viewport width */
+        }
+    }
+
+    body,
+    .hero,
+    .navbar,
+    .service-item,
+    .contact-section,
+    footer,
+    .navbar .nav-links {
         background-color: #56282a;
     }
-    .service-card, .info-card, .contact-card {
+
+    .service-card,
+    .info-card,
+    .contact-card {
         background-color: #ffffee31;
     }
 
-    .info-card p, #service-menu h1, .info-card h3, .service-heading, .service-list li, .learn-more, .contact-section h1, .contact-section p {
+    .info-card p,
+    #service-menu h1,
+    .info-card h3,
+    .service-heading,
+    .service-list li,
+    .learn-more,
+    .contact-section h1,
+    .contact-section p {
         color: #fff;
     }
 
@@ -30,15 +328,14 @@
     .contact-section a:hover {
         color: rgb(95, 226, 43);
     }
-
-
 </style>
+
 
 <body>
     <!-- Her Section -->
     <div class="hero" id="home-menu">
         <div class="hero-text">
-            <h1 style="font-size: 90px;">Welcome to The Teacher</h1>
+            <h1>Welcome to The Teacher</h1>
             <p></p>
             <a href="practices.html"><button class="cta-button">Get Started</button></a>
         </div>
