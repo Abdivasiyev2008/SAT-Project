@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Practice
 
 # Create your views here.
@@ -12,3 +12,4 @@ def practiceList(request):
     }
 
     return render(request, 'test/practice.html', context)
+

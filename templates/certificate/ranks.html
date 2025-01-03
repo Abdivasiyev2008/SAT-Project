@@ -1,37 +1,35 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking Page</title>
-    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/ranks.css' %}">
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-
 </head>
 
 <body>
-
     <!-- Ranking Section -->
     <div class="ranking-section">
         <h1>Ranking</h1>
         <div class="ranking-list">
             {% for rank_user in users %}
-                <div class="ranking-item first-place">
-                    <div class="rank">
-                        1st
-                    </div>
-                    <div class="user-info">
-                        <p class="user-name">{{ rank_user.user.username }}</p>
-                        <p class="user-score">Score: {{ rank_user.overall }}</p>
-                    </div>
+            <div class="ranking-item {% if forloop.counter == 1 %}first-place{% endif %}">
+                <div class="rank">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ficon-library.com%2Fimages%2Fgeneric-user-icon%2Fgeneric-user-icon-9.jpg&f=1&nofb=1&ipt=f31f4b595d54d2aa933204e9bd66c7151b01dc1f678dfaa1f2ad81c68f4e9760&ipo=images" alt="{{ rank_user.user.username }}'s profile picture"
+                        class="profile-image">
                 </div>
+                <div class="user-info">
+                    <p class="user-name">{{ rank_user.user.first_name }} {{ rank_user.user.last_name }}</p>
+                    <p class="user-score">Score: {{ rank_user.overall }}</p>
+                </div>
+            </div>
             {% endfor %}
-            
-            <a class="learn-more" href="{% url 'home' %}">Back</a>
+
+            <a class="learn-more" href="{% url 'practice' %}">Back</a>
         </div>
     </div>
-
 </body>
+
 </html>

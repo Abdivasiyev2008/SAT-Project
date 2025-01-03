@@ -8,12 +8,18 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
+        body, .navbar, form, footer, .navbar .nav-links {
+            background-color: #56282a;
             font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            background-color: #56282a;
         }
 
         form {
             border: 3px solid #f1f1f1;
+            color: #fff
         }
 
         input[type=text],
@@ -88,9 +94,9 @@
             <button type="submit" class="button">Login</button>
         </div>
 
-        <div class="container" style="background-color:#f1f1f1">
+        <div class="container">
             <button type="button" class="cancelbtn button">Cancel</button>
-            <span class="psw">Don't you have <a href="{% url 'signup' %}"> account?</a></span>
+            <span class="psw">Don't you have <a href="{% url 'signup' %}" style="color: red;"> account?</a></span>
         </div>
     </form>
 

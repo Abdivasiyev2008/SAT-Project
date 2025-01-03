@@ -160,7 +160,7 @@
 <body>
     <div class="certificate-container">
         <div class="header">
-            <img src="{% static 'images/main/logo.jpg' %}" alt="Logo">
+            <img src="{% static 'images/main/logo1.jpg' %}" alt="Logo">
             <h1>SAT Test Certificate</h1>
             <p>Official Recognition of Your Achievements</p>
         </div>
@@ -207,7 +207,7 @@
             <br>
 
         <!-- Certificate Download Button -->
-        <a href="{% url 'download_certificate' id %}" class="certificate-btn">Download Certificate</a>
+        <a href="https://theteacher.uz/tests/{{ id }}/certificate/download/{{ user}}/" class="certificate-btn">Download Certificate</a>
 
     </div>
 

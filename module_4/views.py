@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from .models import Module_4, Module_4_Question, Practice
 from certificate.models import Certificate, Checking
+from module_4.calc import calculate_scaled_score
 
 def module_4_Detail(request, pk):
     # Retrieve the Practice object or return a 404 if not found
@@ -87,9 +88,10 @@ def submit_quiz(request, pk):
                 user=request.user,
             )
 
+            score = calculate_scaled_score(score)
 
             # If the certificate already exists, update the english score and overall score
-            certificate.math += score  # Add the score to the existing english score
+            certificate.math = score  # Add the score to the existing english score
             certificate.overall = certificate.math + certificate.english  # Recalculate overall score
             certificate.save()  # Save the updated certificate
             check.save()

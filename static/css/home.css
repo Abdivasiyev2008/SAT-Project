@@ -1,11 +1,13 @@
 body {
     margin: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #f4f7fc; /* Light background color */
+    background-color: #f4f7fc;
+    /* Light background color */
     color: #333;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensure full page height */
+    min-height: 100vh;
+    /* Ensure full page height */
 }
 
 a {
@@ -16,13 +18,15 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
 /* Hero Section */
 .hero {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 6em 2em;
-    background-color: #2e3a59; /* Deep blue color */
+    background-color: #2e3a59;
+    /* Deep blue color */
     color: #fff;
     flex-wrap: wrap;
 }
@@ -118,6 +122,7 @@ a:hover {
     flex-wrap: wrap;
     margin-top: 3em;
 }
+
 .services-container {
     display: flex;
     justify-content: space-between;
@@ -129,12 +134,13 @@ a:hover {
     background-color: #2e3a59;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 1.5em;
-    width: 18%;  /* Adjust width to fit 4 cards */
+    width: 18%;
+    /* Adjust width to fit 4 cards */
     border-radius: 10px;
     text-align: center;
     color: #fff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 250px; 
+    height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -155,22 +161,27 @@ a:hover {
 /* Responsive Styles */
 @media (max-width: 768px) {
     .services-container {
-        flex-direction: column; /* Stack cards vertically */
+        flex-direction: column;
+        /* Stack cards vertically */
         gap: 1em;
-        align-items: center; /* Center cards horizontally */
+        align-items: center;
+        /* Center cards horizontally */
     }
 
     .service-card {
-        width: 90%; /* Full-width cards for smaller screens */
+        width: 90%;
+        /* Full-width cards for smaller screens */
     }
 
     .service-card img {
-        width: 50px; /* Adjust icon size for smaller screens */
+        width: 50px;
+        /* Adjust icon size for smaller screens */
         height: 50px;
     }
 
     .service-card .card-text {
-        font-size: 1em; /* Slightly smaller text */
+        font-size: 1em;
+        /* Slightly smaller text */
     }
 }
 
@@ -219,13 +230,23 @@ a:hover {
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes scaleUp {
-    from { transform: scale(0.5); }
-    to { transform: scale(1); }
+    from {
+        transform: scale(0.5);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 /* Responsive adjustments */
@@ -359,7 +380,8 @@ a:hover {
 
 .contact-section {
     background: #f2f7fb;
-    padding: 30px 20px; /* Reduced top space */
+    padding: 30px 20px;
+    /* Reduced top space */
     text-align: center;
     border-radius: 15px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
@@ -423,3 +445,4 @@ a:hover {
         margin-bottom: 20px;
     }
 }
+

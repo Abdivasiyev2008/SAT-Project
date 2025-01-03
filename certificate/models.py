@@ -13,9 +13,12 @@ class Certificate(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user} + {self.practice}"
+        return f"{self.user} --- {self.practice}"
 
 
 class Checking(models.Model):
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.practice} --- {self.user}"

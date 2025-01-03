@@ -3,7 +3,6 @@
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +10,40 @@
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 
+
+<style>
+    body, .hero, .navbar, .service-item, .contact-section, footer, .navbar .nav-links {
+        background-color: #56282a;
+    }
+    .service-card, .info-card, .contact-card {
+        background-color: #ffffee31;
+    }
+
+    .info-card p, #service-menu h1, .info-card h3, .service-heading, .service-list li, .learn-more, .contact-section h1, .contact-section p {
+        color: #fff;
+    }
+
+    .contact-section a {
+        color: rgb(95, 226, 43);
+    }
+
+    .contact-section a:hover {
+        color: rgb(95, 226, 43);
+    }
+
+
+</style>
+
 <body>
     <!-- Her Section -->
     <div class="hero" id="home-menu">
         <div class="hero-text">
-            <h1>Welcome to The Teacher</h1>
-            <p>Academic Synergy helping students achieve their full capacity on SAT with innovative Practice & Feedback
-                mechanisms.</p>
+            <h1 style="font-size: 90px;">Welcome to The Teacher</h1>
+            <p></p>
             <a href="practices.html"><button class="cta-button">Get Started</button></a>
         </div>
         <div class="hero-illustration">
-            <img src="{% static 'images/home/hero.svg' %}" alt="Illustration">
+            <img src="{% static 'images/home/img.png' %}" alt="Illustration">
         </div>
     </div>
 
@@ -75,8 +97,8 @@
     <section class="services-section">
         <div class="service-item" onclick="window.location.href='#';">
             <div class="logo-box">
-                <img src="https://img.icons8.com/?size=100&id=Ly4ttc09iOon&format=png&color=000000"
-                    alt="Service 1 Logo">
+            <img src="https://img.icons8.com/ios/50/ffffff/retro-tv.png" alt="retro-tv" width="50" height="50" />
+                
             </div>
             <h2 class="service-heading">Personalized SAT Tutoring</h2>
             <ul class="service-list">
@@ -88,8 +110,7 @@
         </div>
         <div class="service-item" onclick="window.location.href='#';">
             <div class="logo-box">
-                <img src="https://img.icons8.com/?size=100&id=wsaXI0aea252&format=png&color=000000"
-                    alt="Service 2 Logo">
+                <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/FFFFFF/book.png" alt="book"/>
             </div>
             <h2 class="service-heading">Detailed Performance Reports</h2>
             <ul class="service-list">
@@ -114,11 +135,11 @@
             </div>
             <div class="contact-card">
                 <i class="fas fa-envelope"></i>
-                <p><strong>Email:</strong> <a href="mailto:sat800makon@gmail.com">sat800makon@gmail.com</a></p>
+                <p><strong>Email:</strong> <br><a href="mailto:the-teacher@mail.ru">the-teacher@mail.ru</a></p>
             </div>
             <div class="contact-card">
                 <i class="fab fa-telegram"></i>
-                <p><strong>Telegram:</strong> <a href="https://t.me/sat800makon" target="_blank">t.me/sat800makon</a>
+                <p><strong>Telegram:</strong> <a href="https://t.me/theteacher_uz" target="_blank">t.me/theteacher_uz</a>
                 </p>
             </div>
         </div>

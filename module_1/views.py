@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 import json
 from .models import Module_1, Module_1_Question, Practice
 from certificate.models import Certificate, Checking
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def module_1_Detail(request, pk):
     # Retrieve the Practice object or return a 404 if not found
     practice = get_object_or_404(Practice, id=pk)
@@ -30,7 +32,6 @@ def module_1_Detail(request, pk):
         }
 
         return render(request, 'modules/module_1.html', context)
-
 
 def submit_quiz(request, pk):
     if request.method == "POST":

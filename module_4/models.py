@@ -93,3 +93,5 @@ class Module_4_Question(models.Model):
         sanitized = re.sub(r'[^a-zA-Z0-9_-]', '_', text)  # Maxsus belgilarni olib tashlash
         sanitized = sanitized.replace(" ", "_")  # Bo'sh joylarni pastki chiziq bilan almashtirish
         return sanitized
+
+

@@ -6,479 +6,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAT Scores</title>
-    <style>
-        /* General Styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-        }
-
-        /* Navbar Styles */
-        nav {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .navbar-logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .navbar-logo h1 {
-            font-size: 1.6em;
-            font-weight: bold;
-            margin: 0;
-            padding-left: 10px;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        /* Table Header */
-        .center-header {
-            text-align: center;
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #333;
-            padding: 10px 0;
-            border-bottom: 2px solid #ddd;
-        }
-
-        /* Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
-
-        td {
-            padding: 10px;
-            vertical-align: middle;
-        }
-
-        .left-table {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .left-table-left {
-            text-align: left;
-        }
-
-        .left-table-left .title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .left-table-left .band {
-            font-size: 2em;
-            font-weight: bold;
-            color: #6c63ff;
-            margin-bottom: 5px;
-        }
-
-        .left-table-left p {
-            margin: 2px 0;
-        }
-
-        .left-table-right {
-            text-align: right;
-            font-size: 1em;
-            font-weight: bold;
-            color: #777;
-        }
-
-        /* Knowledge and Skills Section */
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h4 {
-            font-size: 1.5em;
-            margin-bottom: 8px;
-            color: #000;
-        }
-
-        .header p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .scores {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .score-section {
-            flex: 1;
-        }
-
-        .score-section h5 {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .domain {
-            margin-bottom: 15px;
-        }
-
-        .domain p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .progress-bar {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            margin-top: 5px;
-        }
-
-        .progress-bar .color {
-            width: 20px;
-            height: 5px;
-            background-color: #6c63ff;
-        }
-
-        .progress-bar .uncolor {
-            width: 20px;
-            height: 5px;
-            background-color: #ddd;
-        }
-
-        /* Additional Information */
-        .right-table {
-            text-align: center;
-            font-size: 1.2em;
-            color: #555;
-        }
-
-        .right-table .info {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 10px;
-        }
-
-        .right-table h5 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .additional-info {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        /* Progress bar color */
-        .color {
-            background-color: #6c63ff;
-        }
-
-        .uncolor {
-            background-color: #ddd;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-
-            /* Navbar Adjustments */
-            .navbar-logo h1 {
-                font-size: 1.4em;
-            }
-
-            .navbar-logo img {
-                width: 35px;
-                height: 35px;
-            }
-
-            /* Adjusting the Table */
-            .left-table {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .left-table-right {
-                text-align: left;
-                margin-top: 10px;
-            }
-
-            .center-header {
-                font-size: 1.4em;
-            }
-
-            .scores {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .score-section h5 {
-                font-size: 1.1em;
-            }
-
-            /* Making the content more compact */
-            .domain p {
-                font-size: 13px;
-            }
-
-            .progress-bar {
-                margin-top: 8px;
-            }
-        }
-
-        /* Further smaller screens */
-        @media (max-width: 480px) {
-            .navbar-logo h1 {
-                font-size: 1.2em;
-            }
-
-            .left-table-left .title,
-            .left-table-left .band {
-                font-size: 1.1em;
-            }
-
-            .left-table-right {
-                font-size: 0.9em;
-            }
-
-            .score-section h5 {
-                font-size: 1.1em;
-            }
-
-            .progress-bar .color,
-            .progress-bar .uncolor {
-                width: 15px;
-                height: 4px;
-            }
-
-            .header h4 {
-                font-size: 1.2em;
-            }
-
-            .header p {
-                font-size: 12px;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
+    
+
     <!-- Navbar -->
     <nav>
         <div class="navbar-logo">
-            <img src="http://127.0.0.1:8000/static/images/main/logo.jpg" alt="Logo">
-            <h1>SAT Scores</h1>
+            <img src="http://127.0.0.1:8000/static/images/main/logo1.jpg" alt="Logo">
+            &nbsp;&nbsp;&nbsp;<h1>Scores</h1>
         </div>
     </nav>
 
+
+    <table>
+        <tr>
+            <td class="center-header" colspan="2">{{ certificate.user.first_name }} {{ certificate.user.last_name }}
+            </td>
+        </tr>
+        <tr>
+            <td class="left-table">
+                <div class="left-table-left">
+                    <p class="title">Total Score</p>
+                    <p class="band">{{ certificate.overall }}</p>
+                    <p>Score Range: 450-480</p>
+                </div>
+                <div class="left-table-right">
+                    <p class="title">400-1600</p>
+                </div>
+            </td>
+            <td class="left-table">
+                <div class="left-table-left">
+                    <p class="title">Section Score</p>
+                    <p class="title" style="font-size: 15px;">Reading and Writing</p>
+                    <p class="band">{{ certificate.english }}</p>
+                    <p>Score Range: 200-200</p>
+                </div>
+                <div class="left-table-right">
+                    <p class="title">200-800</p>
+                </div>
+            </td>
+            <td class="left-table">
+                <div class="left-table-left">
+                    <p class="title">Math</p>
+                    <p class="band">{{ certificate.math }}</p>
+                    <p>Score Range: 250-280</p>
+                </div>
+                <div class="left-table-right">
+                    <p class="title">200-800</p>
+                </div>
+            </td>
+            <td class="left-table">
+                <div class="left-table-left">
+                    <p style="font-size: 13px;">
+                        <b>Score range</b>: This is the range of scores you <br>
+                        could possibly get if you took the SAT multiple <br>
+                        times on different days.
+                    </p>
+                </div>
+            </td>
+            <td>
+                <div class="container">
+                    <div class="header">
+                        <h4>Knowledge and Skills</h4>
+                        <p>View your performance across the 8 content domains measured on the SAT</p>
+                    </div>
+                    <div class="scores">
+                        <!-- Left Section -->
+                        <div class="score-section">
+                            <h5>Reading and Writing</h5>
+
+                            <div class="domain">
+                                <p><b>Information and Ideas</b></p>
+                                <p>(26% of test section, 12-14 questions)</p>
+                                <div class="progress-bar">
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                </div>
+                            </div>
+
+                            <div class="domain">
+                                <p><b>Craft and Structure</b></p>
+                                <p>(28% of test section, 13-15 questions)</p>
+                                <div class="progress-bar">
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                </div>
+                            </div>
+
+                            <div class="domain">
+                                <p><b>Expression of Ideas</b></p>
+                                <p>(20% of test section, 8-12 questions)</p>
+                                <div class="progress-bar">
+                                    <div class="color"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section -->
+                        <div class="score-section">
+                            <h5>Math</h5>
+
+                            <div class="domain">
+                                <p><b>Heart of Algebra</b></p>
+                                <p>(30% of test section, 12-15 questions)</p>
+                                <div class="progress-bar">
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                </div>
+                            </div>
+
+                            <div class="domain">
+                                <p><b>Problem Solving and Data Analysis</b></p>
+                                <p>(32% of test section, 15-18 questions)</p>
+                                <div class="progress-bar">
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="uncolor"></div>
+                                    <div class="uncolor"></div>
+                                </div>
+                            </div>
+
+                            <div class="domain">
+                                <p><b>Passport to Advanced Math</b></p>
+                                <p>(38% of test section, 12-15 questions)</p>
+                                <div class="progress-bar">
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="color"></div>
+                                    <div class="uncolor"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
     <div class="container">
-        <table>
-            <tr>
-                <td class="center-header" colspan="2">{{ certificate.user.first_name }} {{ certificate.user.last_name }}</td>
-            </tr>
-            <tr>
-                <td class="left-table">
-                    <div class="left-table-left">
-                        <p class="title">Total Score</p>
-                        <p class="band">{{ certificate.overall }}</p>
-                        <p>Score Range: 450-480</p>
-                    </div>
-                    <div class="left-table-right">
-                        <p class="title">400 - 1600</p>
-                    </div>
-                </td>
-
-                <td class="left-table">
-                    <div class="left-table-left">
-                        <p class="title">Section Score</p>
-                        <p class="title" style="font-size: 15px;">Reading and Writing</p>
-                        <p class="band">{{ certificate.english }}</p>
-                        <p>Score Range: 200-200</p>
-                    </div>
-                    <div class="left-table-right">
-                        <p class="title">200 - 800</p>
-                    </div>
-                </td>
-
-                <td class="left-table">
-                    <div class="left-table-left">
-                        <p class="title">Math</p>
-                        <p class="band">{{ certificate.math }}</p>
-                        <p>Score Range: 250-280</p>
-                    </div>
-                    <div class="left-table-right">
-                        <p class="title">200 - 800</p>
-                    </div>
-                </td>
-
-                <td class="left-table">
-                    <div class="left-table-left">
-                        <p style="font-size: 13px;">
-                            <b>Score range</b>: This is the range of scores you <br>
-                            could possibly get if you took the SAT multiple <br>
-                            times on different days.
-                        </p>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="container">
-                        <div class="header">
-                            <h4>Knowledge and Skills</h4>
-                            <p>View your performance across the 8 content domains measured on the SAT</p>
-                        </div>
-
-                        <div class="scores">
-                            <!-- Left Section -->
-                            <div class="score-section">
-                                <h5>Reading and Writing</h5>
-
-                                <div class="domain">
-                                    <p><b>Information and Ideas</b></p>
-                                    <p>(26% of test section, 12-14 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-
-                                <div class="domain">
-                                    <p><b>Craft and Structure</b></p>
-                                    <p>(28% of test section, 13-15 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-
-                                <div class="domain">
-                                    <p><b>Expression of Ideas</b></p>
-                                    <p>(20% of test section, 8-12 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-
-                                <div class="domain">
-                                    <p><b>Standard English Conventions</b></p>
-                                    <p>(26% of test section, 11-15 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Section -->
-                            <div class="score-section">
-                                <h5>Math</h5>
-
-                                <div class="domain">
-                                    <p><b>Algebra</b></p>
-                                    <p>(35% of test section, 13-15 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-
-                                <div class="domain">
-                                    <p><b>Advanced Math</b></p>
-                                    <p>(35% of test section, 13-15 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-
-                                <div class="domain">
-                                    <p><b>Problem-Solving and Data Analysis</b></p>
-                                    <p>(15% of test section, 5-7 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-
-                                <div class="domain">
-                                    <p><b>Geometry and Trigonometry</b></p>
-                                    <p>(15% of test section, 5-7 questions)</p>
-                                    <div class="progress-bar">
-                                        <div class="color"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                        <div class="uncolor"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="info-section">
+            <div class="info-item">
+                <img src="{{ qr_code }}" alt="QR Code">
+            </div>
+            <div class="info-item">
+                <h2>{{ certificate.practice }}</h2>
+                <p>SAT Exam</p>
+            </div>
+            <div class="info-item">
+                <h2>Date</h2>
+                <p>{{ certificate.time|date:"d.m.Y" }}</p>
+            </div>
+        </div>
     </div>
+    
+
 </body>
 
 </html>
