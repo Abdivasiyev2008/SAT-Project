@@ -10,6 +10,10 @@ import qrcode
 from io import BytesIO
 from django.core.files.base import ContentFile
 import base64
+from django.templatetags.static import static
+from django.contrib.staticfiles.storage import staticfiles_storage
+
+
 
 # Sertifikatni olish
 def get_certificate(request, pk):
@@ -82,6 +86,7 @@ def ranks(request, pk):
 def download_certificate(request, pk, username):
     # Practice obyektini olish
     practice = get_object_or_404(Practice, id=pk)
+    image_url = request.build_absolute_uri(static('images/main/logo1.jpg'))
 
     # Username orqali foydalanuvchini olish
     User = get_user_model()
@@ -116,6 +121,7 @@ def download_certificate(request, pk, username):
     html_content = render_to_string('certificate/certificate_download.html', {
         'certificate': certificate,
         'qr_code': qr_code_data,
+        'image_url': image_url,
     })
 
     # HTMLni PDFga aylantirish
