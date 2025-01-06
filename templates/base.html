@@ -11,6 +11,7 @@
 </head>
 
 <style>
+
     body {
         margin: 0;
         font-family: 'Arial', sans-serif;
@@ -122,17 +123,27 @@
             /* Mobilga moslashtirish */
         }
     }
+    .marquee {
+        background-color: #ff4500;
+        color: white;
+        padding: 10px 0;
+        font-size: 1.2rem;
+        text-align: center;
+    }
 </style>
 
-
-
 <body>
+    <!-- Marquee -->
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left">The platform is currently in test mode !</marquee>
+    </div>
+
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo-container">
             <!-- Logo Image -->
             <a href="{% url 'home' %}">
-                <img src="{% static 'images/main/logo1.jpg' %}" alt="Logo">
+                <img src="{% static 'images/main/logo2.png' %}" alt="Logo">
             </a>
             <div class="logo-text">The Teacher</div>
             <button class="menu-toggle" onclick="toggleMenu()">☰</button> <!-- Hamburger Menu -->
@@ -153,6 +164,13 @@
             <a href="#contact-menu">Contact</a>
         </div>
     </div>
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        }
+    </script>
+
     {% block content %}
     {% endblock content %}
 
@@ -162,7 +180,9 @@
     </footer>
     <!-- End Footer -->
 
-    <script src="{% static 'js/navbar.js' %}"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 
 </html>

@@ -14,106 +14,6 @@
     <link rel="stylesheet" href="{% static 'css/practices.css' %}">
 </head>
 
-<style>
-    body,
-    .navbar,
-    footer,
-    .title-section, .navbar .nav-links {
-        background-color: #56282a;
-        /* Asosiy fon rangini qora-jigarrang qilib belgilash */
-        font-family: 'Arial', sans-serif;
-        /* O'qilishi qulay va zamonaviy shrift */
-    }
-
-    .title-section {
-        text-align: center;
-        /* Sarlavha markazda bo'lishi uchun */
-        padding: 40px 0;
-    }
-
-    .title-section h1 {
-        color: #fff;
-        font-size: 36px;
-        font-weight: bold;
-        text-transform: uppercase;
-        /* Sarlavhalarni katta harf bilan yozish */
-    }
-
-    .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        /* Kartalarni markazga joylashtirish */
-        gap: 30px;
-        /* Kartalar orasidagi bo'shliq */
-        padding: 20px;
-    }
-
-    .card {
-        background-color: #592927;
-        /* Kartaning fonini to'q qizil qilish */
-        width: 250px;
-        border-radius: 10px;
-        /* Yumshoq burchaklar */
-        overflow: hidden;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        /* Yengil soya */
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        /* Hover effektlari */
-    }
-
-    .card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        /* Rasmni to'liq o'zgartirish */
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-
-    .card a h3 {
-        color: #fff;
-        font-size: 20px;
-        padding: 15px;
-        text-align: center;
-        margin: 0;
-        transition: color 0.3s ease;
-        /* Hoverda matn rangini o'zgartirish */
-    }
-
-    .card a h3:hover {
-        color: #ffcc00;
-        /* Hoverda rangni sariq qilish */
-    }
-
-    .card-text {
-        color: #fff;
-        padding: 0 15px 15px;
-        font-size: 14px;
-        text-align: center;
-    }
-
-    .btn-rank {
-        display: block;
-        margin: 15px auto;
-        background-color: #ffcc00;
-        color: #56282a;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        text-align: center;
-        text-decoration: none;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-rank:hover {
-        background-color: #e6b800;
-        /* Hoverda rangni biroz to'q qilish */
-        cursor: pointer;
-    }
-</style>
-
 <body>
     <!-- Title Section -->
     <div class="title-section">
@@ -125,11 +25,11 @@
         {% for practice in practice %}
 
         <div class="card">
-            <img src="{{ practice.image.url }}" alt="Image">
-            <a href="{% url 'module_1' practice.pk %}">
+            <img src="{% static 'images/main/prac.jpg' %}" alt="Image">
+            <a href="{% url 'ask' practice.pk %}">
                 <h3>{{ practice.name }}</h3>
             </a>
-            <p class="card-text" style="color: #fff;">
+            <p class="card-text" style="color: #000;">
                 Started: {{ practice.start_date|date:"d F Y" }}<br>
             </p>
             <a href="{% url 'ranks' practice.pk %}"><button class="btn-rank">Rankings</button></a>

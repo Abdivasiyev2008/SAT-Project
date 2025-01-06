@@ -246,6 +246,7 @@
 
   </div>
 
+
   <script>
     let currentQuestion = 0;
     const answers = {};
@@ -254,7 +255,7 @@
     const questions = [
       {% for question in questions %}
     {
-      questionText: "{{ question.term }}",
+      questionText: `<h3>{{ question.term }}</h3><br><p>{{ question.question | safe }}</p>`,
         image: "{{ question.image.url }}",
           options: [
             {% if question.option_a or question.option_b or question.option_c or question.option_d %}
@@ -291,7 +292,7 @@
         if (remainingTime <= 0) {
           clearInterval(timerInterval);  // Intervalni to'xtatamiz
           document.getElementById('timer').innerText = '00:00'; // 00:00 ko'rsatiladi
-          submitQuizAndMoveToNextModule();
+          window.location.href = `/tests/${practiceId}/certificate/get/`;  // Timer tugaganda boshqa sahifaga o'tish
           return;
         }
 
@@ -303,13 +304,44 @@
       }, 1000);
     }
 
-    function submitQuizAndMoveToNextModule() {
-      document.getElementById('finishBtn').click();
-    }
+    // Only one event listener for finish button
+    document.getElementById("finishBtn").addEventListener("click", function (e) {
+      e.preventDefault(); // Prevent form submission
+
+      const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+
+      fetch(`/tests/submit-quiz/${practiceId}/module/4/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ answers: answers }),
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(error => {
+              throw new Error(error.error || `Error Code: ${response.status}`);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Redirecting to next module...");
+          window.location.href = `/tests/${practiceId}/certificate/get/`;
+        })
+        .catch(error => {
+          console.error("Submission Error:", error.message);
+          alert(`An error occurred: ${error.message}`);
+        });
+    });
+
 
     function loadQuestion() {
       const question = questions[currentQuestion];
-      document.getElementById("questionText").innerText = question.questionText;
+
+      // `innerHTML` bilan savolni joylashtirish
+      document.getElementById("questionText").innerHTML = question.questionText;
 
       const questionImage = document.getElementById("questionImage");
       if (question.image && question.image !== "") {
@@ -457,30 +489,6 @@
     startTimer();
     loadQuestion();
 
-    // Only one event listener for finish button
-    document.getElementById("finishBtn").addEventListener("click", function (e) {
-      e.preventDefault(); // Prevent form submission
-
-      fetch(`/tests/submit-quiz/${practiceId}/module/4/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
-        },
-        body: JSON.stringify({
-          answers: answers
-        }),
-      })
-        .then(response => response.ok ? response.json() : Promise.reject('Error'))
-        .then(data => {
-          alert("Answers submitted successfully!");
-          window.location.href = `/tests/${practiceId}/certificate/get/`;
-        })
-        .catch(error => {
-          console.error("Error submitting answers:", error);
-          alert("Failed to submit answers. Please try again.");
-        });
-    });
   </script>
 
 </body>

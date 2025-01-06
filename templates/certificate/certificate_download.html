@@ -5,178 +5,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAT Scores</title>
+    <title>SAT Certificate</title>
+    <style>
+        @page {
+            size: A4 landscape; /* A4 formatida yonlama rejim */
+            margin: 20mm;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: white;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #4caf50;
+            margin: 10px 0;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .main-table th,
+        .main-table td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .main-table th {
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        .progress-bar {
+            height: 15px;
+            border-radius: 5px;
+            background-color: #ddd;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .qr-info {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .qr-info img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
-
-    
-
-    <!-- Navbar -->
-    <nav>
-        <div class="navbar-logo">
-            <img src="http://127.0.0.1:8000/static/images/main/logo1.jpg" alt="Logo">
-            &nbsp;&nbsp;&nbsp;<h1>Scores</h1>
-        </div>
-    </nav>
-
-
-    <table>
-        <tr>
-            <td class="center-header" colspan="2">{{ certificate.user.first_name }} {{ certificate.user.last_name }}
-            </td>
-        </tr>
-        <tr>
-            <td class="left-table">
-                <div class="left-table-left">
-                    <p class="title">Total Score</p>
-                    <p class="band">{{ certificate.overall }}</p>
-                    <p>Score Range: 450-480</p>
-                </div>
-                <div class="left-table-right">
-                    <p class="title">400-1600</p>
-                </div>
-            </td>
-            <td class="left-table">
-                <div class="left-table-left">
-                    <p class="title">Section Score</p>
-                    <p class="title" style="font-size: 15px;">Reading and Writing</p>
-                    <p class="band">{{ certificate.english }}</p>
-                    <p>Score Range: 200-200</p>
-                </div>
-                <div class="left-table-right">
-                    <p class="title">200-800</p>
-                </div>
-            </td>
-            <td class="left-table">
-                <div class="left-table-left">
-                    <p class="title">Math</p>
-                    <p class="band">{{ certificate.math }}</p>
-                    <p>Score Range: 250-280</p>
-                </div>
-                <div class="left-table-right">
-                    <p class="title">200-800</p>
-                </div>
-            </td>
-            <td class="left-table">
-                <div class="left-table-left">
-                    <p style="font-size: 13px;">
-                        <b>Score range</b>: This is the range of scores you <br>
-                        could possibly get if you took the SAT multiple <br>
-                        times on different days.
-                    </p>
-                </div>
-            </td>
-            <td>
-                <div class="container">
-                    <div class="header">
-                        <h4>Knowledge and Skills</h4>
-                        <p>View your performance across the 8 content domains measured on the SAT</p>
-                    </div>
-                    <div class="scores">
-                        <!-- Left Section -->
-                        <div class="score-section">
-                            <h5>Reading and Writing</h5>
-
-                            <div class="domain">
-                                <p><b>Information and Ideas</b></p>
-                                <p>(26% of test section, 12-14 questions)</p>
-                                <div class="progress-bar">
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                </div>
-                            </div>
-
-                            <div class="domain">
-                                <p><b>Craft and Structure</b></p>
-                                <p>(28% of test section, 13-15 questions)</p>
-                                <div class="progress-bar">
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                </div>
-                            </div>
-
-                            <div class="domain">
-                                <p><b>Expression of Ideas</b></p>
-                                <p>(20% of test section, 8-12 questions)</p>
-                                <div class="progress-bar">
-                                    <div class="color"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="score-section">
-                            <h5>Math</h5>
-
-                            <div class="domain">
-                                <p><b>Heart of Algebra</b></p>
-                                <p>(30% of test section, 12-15 questions)</p>
-                                <div class="progress-bar">
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                </div>
-                            </div>
-
-                            <div class="domain">
-                                <p><b>Problem Solving and Data Analysis</b></p>
-                                <p>(32% of test section, 15-18 questions)</p>
-                                <div class="progress-bar">
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="uncolor"></div>
-                                    <div class="uncolor"></div>
-                                </div>
-                            </div>
-
-                            <div class="domain">
-                                <p><b>Passport to Advanced Math</b></p>
-                                <p>(38% of test section, 12-15 questions)</p>
-                                <div class="progress-bar">
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="color"></div>
-                                    <div class="uncolor"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
     <div class="container">
-        <div class="info-section">
-            <div class="info-item">
-                <img src="{{ qr_code }}" alt="QR Code">
+        <!-- Header -->
+        <div class="header">
+            <h1>SAT Certificate</h1>
+            <p>{{ certificate.user.first_name }} {{ certificate.user.last_name }}</p>
+        </div>
+
+        <!-- Combined Table -->
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th>Scores</th>
+                    <th>English (Reading and Writing)</th>
+                    <th>Math</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <p><strong>Total Score:</strong> {{ certificate.overall }}</p>
+                        <p><strong>Reading and Writing:</strong> {{ certificate.english }}</p>
+                        <p><strong>Math:</strong> {{ certificate.math }}</p>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                <strong>Information and Ideas:</strong> 26% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 40%;"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>Craft and Structure:</strong> 28% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 60%;"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>Expression of Ideas:</strong> 20% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 30%;"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>English Conventions:</strong> 26% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 50%;"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                <strong>Algebra:</strong> 35% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 70%;"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>Advanced Math:</strong> 35% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 60%;"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>Problem Solving:</strong> 15% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 50%;"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>Geometry:</strong> 15% of test section
+                                <div class="progress-bar">
+                                    <div class="fill" style="width: 40%;"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- QR Code & Details -->
+        <div class="qr-info">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                <!-- QR Code -->
+                <div>
+                    <img src="{{ qr_code }}" alt="QR Code" style="width: 100px; height: 100px;">
+                </div>
+        
+                <!-- Exam Details -->
+                <div>
+                    <p><strong>Exam:</strong> {{ certificate.practice }}</p>
+                    <p><strong>Date:</strong> {{ certificate.time|date:"d.m.Y" }}</p>
+                </div>
             </div>
-            <div class="info-item">
-                <h2>{{ certificate.practice }}</h2>
-                <p>SAT Exam</p>
-            </div>
-            <div class="info-item">
-                <h2>Date</h2>
-                <p>{{ certificate.time|date:"d.m.Y" }}</p>
-            </div>
+        </div>
+        
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Generated by SAT System | &copy; 2025 SAT Exams</p>
         </div>
     </div>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
     
-
 </body>
 
 </html>

@@ -251,51 +251,51 @@
     let currentQuestion = 0;
     const answers = {};
     const bookmarkedQuestions = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
-  
+
     const questions = [
       {% for question in questions %}
-      {
-        questionText: "{{ question.term }}",
+    {
+      questionText: `<h3>{{ question.term }}</h3><br><p>{{ question.question | safe }}</p>`,
         image: "{{ question.image.url }}",
-        options: [
-          {% if question.option_a or question.option_b or question.option_c or question.option_d %}
-          "A) {{ question.option_a }}",
-          "B) {{ question.option_b }}",
-          "C) {{ question.option_c }}",
-          "D) {{ question.option_d }}",
-          {% else %}
-          "input",
-          {% endif %}
+          options: [
+            {% if question.option_a or question.option_b or question.option_c or question.option_d %}
+    "A) {{ question.option_a }}",
+      "B) {{ question.option_b }}",
+      "C) {{ question.option_c }}",
+      "D) {{ question.option_d }}",
+      {% else %}
+    "input",
+      {% endif %}
         ],
       },
-      {% endfor %}
+    {% endfor %}
     ];
-  
+
     const totalQuestions = questions.length;
     document.getElementById('totalQuestionsNum').innerText = totalQuestions;
-  
+
     function loadSavedAnswers(practiceId) {
       const savedAnswers = JSON.parse(localStorage.getItem(`quizAnswers_${practiceId}`)) || {};
       Object.keys(savedAnswers).forEach(questionIndex => {
         answers[questionIndex] = savedAnswers[questionIndex];
       });
     }
-  
+
     function saveAnswers(practiceId) {
       localStorage.setItem(`quizAnswers_${practiceId}`, JSON.stringify(answers));
     }
-  
+
     function startTimer() {
       let remainingTime = 32 * 60; // 32 daqiqa (32*60 sekund)
-  
+
       let timerInterval = setInterval(() => {
         if (remainingTime <= 0) {
           clearInterval(timerInterval);  // Intervalni to'xtatamiz
           document.getElementById('timer').innerText = '00:00'; // 00:00 ko'rsatiladi
-          submitQuizAndMoveToNextModule();
+          window.location.href = `/tests/practice/${practiceId}/3/`;  // Timer tugaganda boshqa sahifaga o'tish
           return;
         }
-  
+
         remainingTime--; // Har bir sekundda kamaytirish
         const minutes = Math.floor(remainingTime / 60);
         const seconds = remainingTime % 60;
@@ -303,15 +303,46 @@
         document.getElementById('timer').innerText = formattedTime; // Timerni yangilash
       }, 1000);
     }
-  
-    function submitQuizAndMoveToNextModule() {
-      document.getElementById('finishBtn').click();
-    }
-  
+
+    // Only one event listener for finish button
+    document.getElementById("finishBtn").addEventListener("click", function (e) {
+      e.preventDefault(); // Prevent form submission
+
+      const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+
+      fetch(`/tests/submit-quiz/${practiceId}/module/3/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ answers: answers }),
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(error => {
+              throw new Error(error.error || `Error Code: ${response.status}`);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Redirecting to next module...");
+          window.location.href = `/tests/practice/${practiceId}/4/`;
+        })
+        .catch(error => {
+          console.error("Submission Error:", error.message);
+          alert(`An error occurred: ${error.message}`);
+        });
+    });
+
+
     function loadQuestion() {
       const question = questions[currentQuestion];
-      document.getElementById("questionText").innerText = question.questionText;
-  
+
+      // `innerHTML` bilan savolni joylashtirish
+      document.getElementById("questionText").innerHTML = question.questionText;
+
       const questionImage = document.getElementById("questionImage");
       if (question.image && question.image !== "") {
         questionImage.src = question.image;
@@ -319,10 +350,10 @@
       } else {
         questionImage.style.display = "none";
       }
-  
+
       const options = document.getElementById("options");
       options.innerHTML = '';
-  
+
       if (question.options[0] === "input") {
         const inputElement = document.createElement('div');
         inputElement.classList.add('option');
@@ -352,23 +383,23 @@
           options.appendChild(optionElement);
         });
       }
-  
+
       document.getElementById("currentQuestionNum").innerText = currentQuestion + 1;
       updatePagination();
       updateBookmarkIcon();
     }
-  
+
     function updatePagination() {
       const paginationContainer = document.getElementById('pagination');
       paginationContainer.innerHTML = '';
-  
+
       for (let i = 0; i < totalQuestions; i++) {
         const pageItem = document.createElement('li');
         pageItem.classList.add('page-item');
         if (i === currentQuestion) {
           pageItem.classList.add('active');
         }
-  
+
         const pageLink = document.createElement('a');
         pageLink.classList.add('page-link');
         pageLink.href = "#";
@@ -377,113 +408,90 @@
           currentQuestion = i;
           loadQuestion();
         });
-  
+
         pageItem.appendChild(pageLink);
         paginationContainer.appendChild(pageItem);
       }
     }
-  
+
     function selectAnswer(answer) {
       const options = document.querySelectorAll('.option input[type="radio"]');
       options.forEach(option => {
         option.checked = false;
       });
-  
+
       const selectedOption = document.querySelector(`input[type="radio"][value="${answer}"]`);
       if (selectedOption) {
         selectedOption.checked = true;
       }
-  
+
       answers[currentQuestion] = answer;
       saveAnswers(practiceId);
     }
-  
+
     function updateBookmarkIcon() {
       const question = questions[currentQuestion];
       const isBookmarked = bookmarkedQuestions.some(q => q.questionText === question.questionText);
-  
+
       const bookmarkIcon = document.getElementById("bookmarkIcon");
       bookmarkIcon.src = isBookmarked
         ? "https://img.icons8.com/ios-filled/50/bookmark-ribbon.png"
         : "https://img.icons8.com/ios/50/bookmark-ribbon--v1.png";
     }
-  
+
     function toggleBookmark() {
       const question = questions[currentQuestion];
       const index = bookmarkedQuestions.findIndex(q => q.questionText === question.questionText);
-  
+
       if (index === -1) {
         bookmarkedQuestions.push(question);
       } else {
         bookmarkedQuestions.splice(index, 1);
       }
-  
+
       localStorage.setItem('bookmarkedQuestions', JSON.stringify(bookmarkedQuestions));
       updateBookmarkIcon();
     }
-  
+
     document.getElementById("bookmarkIcon").addEventListener('click', toggleBookmark);
-  
+
     function enlargeImage() {
       const image = document.getElementById('questionImage');
       const modal = document.getElementById('imageModal');
       const modalImage = document.getElementById('modalImage');
-  
+
       modal.style.display = 'flex';
       modalImage.src = image.src;
     }
-  
+
     document.getElementById('imageModal').addEventListener('click', () => {
       document.getElementById('imageModal').style.display = 'none';
     });
-  
+
     document.getElementById('questionImage').addEventListener('click', enlargeImage);
-  
+
     document.getElementById("nextBtn").addEventListener('click', () => {
       if (currentQuestion < totalQuestions - 1) {
         currentQuestion++;
         loadQuestion();
       }
     });
-  
+
     document.getElementById("prevBtn").addEventListener('click', () => {
       if (currentQuestion > 0) {
         currentQuestion--;
         loadQuestion();
       }
     });
-  
+
     const practiceId = "{{ practice.id }}";
     loadSavedAnswers(practiceId);
     startTimer();
     loadQuestion();
-  
-    // Only one event listener for finish button
-    document.getElementById("finishBtn").addEventListener("click", function (e) {
-      e.preventDefault(); // Prevent form submission
-  
-      fetch(`/tests/submit-quiz/${practiceId}/module/3/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
-        },
-        body: JSON.stringify({
-          answers: answers
-        }),
-      })
-        .then(response => response.ok ? response.json() : Promise.reject('Error'))
-        .then(data => {
-          alert("Answers submitted successfully!");
-          window.location.href = `/tests/practice/${practiceId}/4/`;
-        })
-        .catch(error => {
-          console.error("Error submitting answers:", error);
-          alert("Failed to submit answers. Please try again.");
-        });
-    });
+
   </script>
-  
+
+
 </body>
 
 </html>

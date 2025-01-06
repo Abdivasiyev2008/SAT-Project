@@ -23,7 +23,7 @@ class Module_3(models.Model):
 class Module_3_Question(models.Model):
     module = models.ForeignKey(Module_3, on_delete=models.CASCADE, related_name='questions') 
     term = models.CharField(max_length=150)
-    question = RichTextField()
+    question = RichTextField(null=True, blank=True)
 
     option_a = models.CharField(max_length=255, null=True, blank=True)
     option_b = models.CharField(max_length=255, null=True, blank=True)
@@ -38,23 +38,23 @@ class Module_3_Question(models.Model):
 
     def save(self, *args, **kwargs):
         # Rasmni yaratish va saqlash
-        if not self.image:
+        if not self.image and self.question:  # image bo'sh va question mavjud bo'lsa
             try:
                 # Matnni rasmga aylantirish (LaTeX ishlatmasdan)
                 img = self.generate_text_image(self.clean_html(self.question))
-
+    
                 image_buffer = BytesIO()
                 img.save(image_buffer, format='PNG')
                 image_buffer.seek(0)
-
+    
                 safe_filename = self.sanitize_filename(self.term)  # Fayl nomini term bo'yicha yaratish
-
+    
                 # Rasmni ContentFile orqali saqlash
                 self.image.save(f"{safe_filename}.png", ContentFile(image_buffer.read()), save=False)
-
+    
             except Exception as e:
                 print(f"Xatolik rasm yaratishda: {e}")
-
+    
         super().save(*args, **kwargs)
 
     def clean_html(self, text):
