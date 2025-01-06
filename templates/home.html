@@ -11,79 +11,14 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 </head>
 <style>
-    /* Global Styling */
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        color: #fff;
-        overflow-x: hidden;
-        /* Unified background color */
+    body, .hero, .navbar, .service-item, .contact-section, footer, .navbar .nav-links {
+        background-color: #56282a;
+    }
+    .service-card, .info-card, .contact-card {
+        background-color: #ffffee31;
     }
 
-    .hero {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 30px 20px;
-        /* Consistent hero section color */
-        width: 100vw;
-        /* Full viewport width */
-        box-sizing: border-box;
-        /* Prevents overflow due to padding */
-    }
-
-    .navbar {
-        /* Consistent navbar color */
-        padding: 10px;
-        display: flex;
-        justify-content: center;
-        width: 100vw;
-        /* Full viewport width */
-        box-sizing: border-box;
-        /* Prevents overflow due to padding */
-    }
-
-    .navbar .nav-links a {
-        color: #fff;
-        text-decoration: none;
-        margin: 0 10px;
-    }
-
-    .navbar .nav-links a:hover {
-        color: #d6a5a5;
-    }
-
-    .hero-text h1 {
-        font-size: 2rem;
-        margin-bottom: 15px;
-    }
-
-    .hero-text p {
-        font-size: 1rem;
-        line-height: 1.5;
-        margin: 10px 0;
-    }
-
-    .hero-illustration img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .cta-button {
-        padding: 10px 20px;
-        font-size: 1rem;
-        background-color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        text-transform: uppercase;
-        margin-top: 15px;
-    }
-
-    .cta-button:hover {
-        background-color: #d6a5a5;
+    .info-card p, #service-menu h1, .info-card h3, .service-heading, .service-list li, .learn-more, .contact-section h1, .contact-section p {
         color: #fff;
     }
 
@@ -167,123 +102,13 @@
         margin: 10px;
     }
 
-    .service-heading {
-        font-size: 1.1rem;
-        margin-top: 10px;
+    .contact-section a:hover {
+        color: rgb(95, 226, 43);
     }
 
-    .contact-section {
-        padding: 20px;
-        text-align: center;
-        /* Unified contact section color */
-    }
 
-    .contact-card {
-        width: 280px;
-        text-align: center;
-        border-radius: 10px;
-        /* Harmonized contact card background */
-        padding: 15px;
-        margin: 10px auto;
-    }
-
-    footer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 10px;
-        color: #fff;
-        width: 100vw;
-        /* Full viewport width */
-        box-sizing: border-box;
-        /* Prevents overflow due to padding */
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .hero {
-            flex-direction: column;
-        }
-
-        .hero-text h1 {
-            font-size: 1.8rem;
-        }
-
-        .cta-button {
-            font-size: 0.9rem;
-            padding: 8px 16px;
-        }
-
-        .services-container {
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 0 10px;
-        }
-
-        .service-card {
-            width: 100%;
-            max-width: 260px;
-            padding: 15px;
-            margin: 10px auto;
-        }
-
-        .info-section {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .services-section {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .navbar {
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .hero {
-            padding: 30px 10px;
-            flex-direction: column;
-        }
-
-        .hero-text h1 {
-            font-size: 1.5rem;
-        }
-
-        .hero-illustration img {
-            display: none;
-        }
-
-        .cta-button {
-            font-size: 0.8rem;
-        }
-
-        .services-container {
-            flex-direction: column;
-            align-items: center;
-            padding: 0 10px;
-        }
-
-        .service-card {
-            width: 100%;
-            max-width: 240px;
-            padding: 10px;
-            margin: 10px auto;
-        }
-
-        footer {
-            flex-direction: column;
-            text-align: center;
-            width: 100vw;
-            /* Full viewport width */
-        }
-    }
 </style>
+
 
 <body>
     

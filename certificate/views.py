@@ -86,6 +86,8 @@ def ranks(request, pk):
 
 def download_certificate(request, pk, username):
     practice = get_object_or_404(Practice, id=pk)
+
+    # Username orqali foydalanuvchini olish
     User = get_user_model()
     user = get_object_or_404(User, username=username)
     certificate = Certificate.objects.filter(practice=practice, user=user).first()
@@ -115,6 +117,7 @@ def download_certificate(request, pk, username):
     html_content = render_to_string('certificate/certificate_download.html', {
         'certificate': certificate,
         'qr_code': qr_code_data,
+        'image_url': image_url,
     })
 
     # Generate PDF
