@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break Timer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .time {
+            font-size: 6rem;
+            border: 3px solid #fff;
+            padding: 20px;
+        }
+
+        .content {
+            max-width: 600px;
+            margin-left: 30px;
+        }
+
+        .rules {
+            text-align: left;
+            margin: 30px 0;
+            font-size: 1.5rem;
+        }
+
+        .button {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        a {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        a:hover {
+            background-color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .content {
+                margin: 20px 0;
+            }
+
+            .time {
+                font-size: 5rem;
+            }
+
+            .rules {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="time" id="timer">1:00</div>
+        <div class="content">
+            <h1 style="font-size: 2rem;">Take a Break: Do Not Close Your Device</h1>
+            <p style="font-size: 1.2rem;">After the break, a <strong>Resume Testing Now</strong> button will appear and
+                you’ll start the next section.</p>
+            <div class="rules">
+                <p><strong>Follow these rules during the break:</strong></p>
+                <ol>
+                    <li>Do not disturb students who are still testing.</li>
+                    <li>Do not exit the app or close your laptop.</li>
+                    <li>Do not access phones, smartwatches, textbooks, notes, or the internet.</li>
+                    <li>Do not eat or drink near any testing device.</li>
+                    <li>Do not speak in the test room; outside the test room, do not discuss the exam with anyone.</li>
+                </ol>
+            </div>
+
+            <div class="button">
+                <a onclick="skipTimer()">Skip</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timer = 1 * 60; // 1 minutes in seconds
+        const timerElement = document.getElementById('timer');
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            const pk = "{{ pk }}";
+            if (timer <= 0) {
+                clearInterval(interval);
+                window.location.href = "/tests/practice/{{ id }}/2/"; // Redirect to example.com
+            } else {
+                timer--;
+                timerElement.textContent = formatTime(timer);
+            }
+        }
+
+        function skipTimer() {
+            const pk = "{{ pk }}";
+            window.location.href = "/tests/practice/{{ id }}/2/"; // Redirect to skip page
+        }
+
+        const interval = setInterval(updateTimer, 1000); // Update every second
+    </script>
+</body>
+
+</html>

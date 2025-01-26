@@ -1,0 +1,188 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Teacher</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+
+<style>
+
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7fc;
+        /* Yengil fon */
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        /* Sahifa to'liq bo'lsin */
+    }
+
+    a {
+        color: #0066cc;
+        /* Tugmalar uchun yaxshiroq kontrast */
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    form {
+        border: 3px solid #f1f1f1;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        /* Kutilgan yaxshilash */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        border-radius: 8px;
+        /* Burchaklar yumshatilgan */
+    }
+
+    .button {
+        background-color: #4CAF50;
+        /* Yorqin va aniqlik uchun yashil */
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 8px;
+        /* Yumshoq burchaklar */
+    }
+
+    .button:hover {
+        opacity: 0.8;
+        background-color: #45a049;
+        /* Hover holatida yorqinroq */
+    }
+
+    .cancelbtn {
+        background-color: #f44336;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .cancelbtn:hover {
+        opacity: 0.8;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .imgcontainer {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    img.avatar {
+        width: 40%;
+        border-radius: 50%;
+    }
+
+    span.psw {
+        float: right;
+        padding-top: 16px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+
+        .imgcontainer img.avatar {
+            width: 50%;
+        }
+
+        .cancelbtn {
+            width: 100%;
+            /* Mobilga moslashtirish */
+        }
+
+        .button {
+            width: 100%;
+            /* Mobilga moslashtirish */
+        }
+    }
+    .marquee {
+        background-color: #ff4500;
+        color: white;
+        padding: 10px 0;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <!-- Marquee -->
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left">The platform is currently in test mode !</marquee>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo-container">
+            <!-- Logo Image -->
+            <a href="{% url 'home' %}">
+                <img src="{% static 'images/main/logo2.png' %}" alt="Logo">
+            </a>
+            <div class="logo-text">The Teacher</div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button> <!-- Hamburger Menu -->
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'practice' %}">Home</a>
+            <a href="{% url 'home' %}#about">About</a>
+            <a href="#service-menu">Services</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+            <a href="#video">Video</a>
+            <a href="#events">Events</a>
+            <a href="#team">Team</a>
+            <a href="#contact-menu">Contact</a>
+        </div>
+    </div>
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        }
+    </script>
+
+    {% block content %}
+    {% endblock content %}
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; <span id="year"></span> The Teacher. All Rights Reserved.</p>
+    </footer>
+    <!-- End Footer -->
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

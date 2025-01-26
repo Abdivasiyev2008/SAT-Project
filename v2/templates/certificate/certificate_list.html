@@ -1,0 +1,262 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAT Test Certificate</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            padding: 0;
+            color: #333;
+        }
+
+        .certificate-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header img {
+            width: 120px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        .personal-info {
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: left;
+            margin-left: 50px;
+            color: #2c3e50;
+        }
+
+        .personal-info p {
+            margin: 8px 0;
+        }
+
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .score-table th,
+        .score-table td {
+            padding: 14px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .score-table th {
+            background-color: #3498db;
+            color: white;
+            font-size: 20px;
+        }
+
+        .score-table td {
+            font-size: 16px;
+        }
+
+        .score-range {
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .valid-until {
+            font-size: 14px;
+            color: #34495e;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+
+        .certificate-btn {
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .certificate-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .certificate-container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .personal-info {
+                margin-left: 20px;
+                font-size: 16px;
+            }
+
+            .score-table th, .score-table td {
+                font-size: 14px;
+            }
+
+            .certificate-btn {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="certificate-container">
+        <div class="header">
+            <img src="{% static 'images/main/logo2.png' %}" alt="Logo">
+            <h1>SAT Test Certificate</h1>
+            <p>Official Recognition of Your Achievements</p>
+        </div>
+
+        <!-- Certificate Data Loop -->
+        {% for certificate in certificate_data %}
+            <div class="personal-info">
+                <p><strong>First Name:</strong> {{ certificate.user.first_name }}</p>
+                <p><strong>Last Name:</strong> {{ certificate.user.last_name }}</p>
+                <p><strong>Test Date:</strong> {{ certificate.time }}</p>
+                <p><strong>Test Name:</strong> {{ certificate.practice }}</p>
+            </div>
+
+            <h2>Test Scores</h2>
+            <table class="score-table">
+                <tr>
+                    <th>Category</th>
+                    <th>Score Range</th>
+                    <th>Your Score</th>
+                </tr>
+                <tr>
+                    <td>Total Score</td>
+                    <td>400 - 1600</td>
+                    <td class="score-range">{{ certificate.overall }}</td>
+                </tr>
+                <tr>
+                    <td>English</td>
+                    <td>200 - 800</td>
+                    <td class="score-range">{{ certificate.english }}</td>
+                </tr>
+                <tr>
+                    <td>Math</td>
+                    <td>200 - 800</td>
+                    <td class="score-range">{{ certificate.math }}</td>
+                </tr>
+            </table>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Score Visualization</h3>
+                <canvas id="scoreChart" width="400" height="200"></canvas>
+            </div>
+
+        {% endfor %}
+            <br>
+
+        <!-- Certificate Download Button -->
+        <a href="https://theteacher.uz/tests/{{ id }}/certificate/download/{{ user }}/" class="certificate-btn" style="display: none;">Download Certificate</a>
+
+    </div>
+
+    <script>
+        // Assuming the certificate data is passed correctly
+        {% for certificate in certificate_data %}
+        // Dynamic data from the certificate
+        var totalScore = {{ certificate.overall }};
+        var englishScore = {{ certificate.english }};
+        var mathScore = {{ certificate.math }};
+
+        // Maximum possible scores for each category
+        var maxTotalScore = 1600;
+        var maxEnglishScore = 800;
+        var maxMathScore = 800;
+
+        // Chart setup
+        var ctx = document.getElementById('scoreChart').getContext('2d');
+        var scoreChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Score', 'English', 'Math'],
+                datasets: [{
+                    label: 'Your Scores',
+                    data: [totalScore, englishScore, mathScore],
+                    backgroundColor: ['#e67e22', '#2ecc71', '#3498db'],
+                    borderColor: ['#e67e22', '#2ecc71', '#3498db'],
+                    borderWidth: 1
+                }, {
+                    label: 'Max Scores',
+                    data: [1600, 800, 800], // Maximum possible score for each category
+                    backgroundColor: '#eeeeee',
+                    borderColor: '#ddd',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1600,  // Set the maximum value to 1600 for the total score
+                        ticks: {
+                            stepSize: 200
+                        }
+                    }
+                }
+            }
+        });
+        {% endfor %}
+    </script>
+</body>
+
+</html>
