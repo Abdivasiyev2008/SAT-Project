@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
 from .models import Module_1_Question, Practice, Time1
@@ -9,6 +9,7 @@ from django_user_agents.utils import get_user_agent
 from django.utils.timezone import now
 import datetime
 from django.db import transaction
+from correct.models import *
 
 @login_required
 def module_1_Detail(request, pk):
@@ -97,7 +98,7 @@ def submit_quiz(request, pk):
         try:
             data = json.loads(request.body)
             answers = data.get("answers", {})
-            print(answers)
+            print("User Answers:", answers)  # Foydalanuvchi javoblarini konsolga chiqarish
             practice = get_object_or_404(Practice, id=pk)
 
             questions = Module_1_Question.objects.filter(module__practice=practice)
@@ -118,10 +119,54 @@ def submit_quiz(request, pk):
                     })
 
                 score = 0
-                if answers:
-                    for question, user_answer in zip(questions, answers.values()):
+                module1_ans = Module1_Ans.objects.create(
+                    user = request.user,
+                    practice = practice
+                )
+
+                # Answers keylarni tekshirib, noto'g'ri javoblarni tekshirayotganini nazorat qilish
+                for idx, question in enumerate(questions):
+                    user_answer = answers.get(str(idx))  # user_answer = answers.get(str(idx)) ning xavfsiz usuli
+                    if user_answer == question.option_a:
+                        user_answer = question.option_a
+                    
+                    elif user_answer == question.option_b:
+                        user_answer = question.option_b
+                    
+                    elif user_answer == question.option_c:
+                        user_answer = question.option_c
+
+                    elif user_answer == question.option_d:
+                        user_answer = question.option_d
+
+                    # Agar foydalanuvchi javob bermagan bo'lsa, user_answer None bo'ladi
+                    if user_answer:
                         if user_answer == question.option_select_answer:
                             score += 1
+                    else:
+                        # Foydalanuvchi javob bermagan bo'lsa, `null` saqlaymiz
+                        user_answer = None
+                    
+                    select = ""
+                    
+                    if question.option_select_answer == question.option_a:
+                        select = question.option_a
+                    
+                    elif question.option_select_answer == question.option_b:
+                        select = question.option_b
+                    
+                    elif question.option_select_answer == question.option_c:
+                        select = question.option_c
+
+                    elif question.option_select_answer == question.option_d:
+                        select = question.option_d
+
+                    Answer1.objects.get_or_create(
+                        module1_ans=module1_ans,
+                        user_answer=user_answer,
+                        correct_answer=question.option_select_answer,  # To'g'ri javobni saqlaymiz
+                        question=select
+                    )
 
                 certificate.english += score
                 certificate.module1 = True
@@ -138,6 +183,7 @@ def submit_quiz(request, pk):
         except json.JSONDecodeError as e:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
         except Exception as e:
+            print(f"Unexpected error: {str(e)}")  # Xatolikni konsolga chiqarish
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     else:
         return JsonResponse({"error": "Invalid request method."}, status=405)

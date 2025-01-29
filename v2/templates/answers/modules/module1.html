@@ -1,0 +1,125 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1</title>
+    <style>
+        /* Umumiy body uchun stil */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5, #e3f2fd);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Savol va javoblar konteyneri */
+        .container {
+            width: 90%;
+            max-width: 900px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Savol sarlavhasi */
+        h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        /* Har bir javob uchun umumiy uslub */
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        /* Foydalanuvchi javobi */
+        .user-answer {
+            background-color: #ffeb3b;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* To'g'ri javob */
+        .correct-answer {
+            background-color: #4caf50;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Har bir savolni ajratib ko'rsatish */
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        /* Button uchun stil */
+        .submit-button {
+            background-color: #6200ea;
+            color: white;
+            font-size: 1.1em;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            background-color: #3700b3;
+        }
+
+        /* FadeIn animatsiyasi */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        {% for answers_data in answers_data %}
+        <div class="question-container">
+            <h1>Question: {{ answers_data.question | safe }}</h1>
+            <p class="user-answer">Your answer: {{ answers_data.user_answer | safe }}</p>
+            <p class="correct-answer">Correct Answer: {{ answers_data.correct_answer | safe }}</p>
+        </div>
+        {% endfor %}
+        <center>
+            <a class="submit-button" href="/tests/answers/{{ id }}/2/">Module 2</a> <!-- Bu yerda button qo'shildi -->
+        </center>
+    </div>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+</body>
+
+</html>
+
+{% endblock content %}

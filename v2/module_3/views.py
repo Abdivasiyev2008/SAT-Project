@@ -7,6 +7,8 @@ import json
 from .models import Module_3, Module_3_Question, Practice, Time3
 from certificate.models import Certificate, Checking
 from django_user_agents.utils import get_user_agent
+from django.db import transaction
+from correct.models import *
 
 
 @login_required
@@ -107,65 +109,111 @@ def save_time(request, pk):
 def submit_quiz(request, pk):
     if request.method == "POST":
         try:
-            # Parse the incoming JSON data
             data = json.loads(request.body)
-
-            # Get the user's answers from the request
             answers = data.get("answers", {})
-
-            # Retrieve the Practice object
+            print("User Answers:", answers)  # Foydalanuvchi javoblarini konsolga chiqarish
             practice = get_object_or_404(Practice, id=pk)
 
-            # Retrieve the questions related to the practice
+            # Change the model from Module_1_Question or Module_2_Question to Module_3_Question
             questions = Module_3_Question.objects.filter(module__practice=practice)
-
             if not questions.exists():
                 return JsonResponse({"error": "No questions found for this practice."}, status=404)
 
-            # Get or create the certificate object for the user
-            certificate, created = Certificate.objects.get_or_create(
-                practice=practice,
-                user=request.user,
-                defaults={
-                    'english': 0,
-                    'math': 0,
-                    'overall': 0,
-                }
-            )
+            with transaction.atomic():
+                # Update certificate or module3 object accordingly
+                certificate, created = Certificate.objects.get_or_create(
+                    practice=practice,
+                    user=request.user,
+                    defaults={'english': 0, 'math': 0, 'overall': 0}
+                )
 
-            # If module3 is already completed, skip the submission
-            if certificate.module3:
-                return JsonResponse({
-                    "message": "You have already completed this module.",
-                    "score": certificate.math  # Return the existing score if already completed
-                })
+                # Change the module condition check to module3
+                if certificate.module3:
+                    return JsonResponse({
+                        "message": "You have already completed this module.",
+                        "score": certificate.math  # Adjust based on what module3 represents
+                    })
 
-            # Score calculation, handle case where no answers are provided
-            score = 0
-            if answers:
-                for question, user_answer in zip(questions, answers.values()):
-                    if user_answer == question.option_select_answer:
-                        score += 1
+                score = 0
+                module3_ans = Module3_Ans.objects.create(  # Create Module3_Ans instance
+                    user=request.user,
+                    practice=practice
+                )
 
-            # Save the updated score and mark module3 as completed
-            certificate.math += score
-            certificate.module3 = True
-            certificate.overall = certificate.english + certificate.math  # Include other subjects if applicable
-            certificate.save()
+                # Iterate through questions and check answers for module 3
+                for idx, question in enumerate(questions):
+                    user_answer = answers.get(str(idx))  # user_answer = answers.get(str(idx)) ning xavfsiz usuli
+
+                    if user_answer == question.option_a:
+                        user_answer = question.option_a
+                    
+                    elif user_answer == question.option_b:
+                        user_answer = question.option_b
+                    
+                    elif user_answer == question.option_c:
+                        user_answer = question.option_c
+
+                    elif user_answer == question.option_d:
+                        user_answer = question.option_d
+
+                    elif user_answer == question.option_input_answer:
+                        user_answer = question.option_input_answer
+
+                    # Ensure that correct_answer is never None or empty
+                    correct_answer = question.option_select_answer or question.option_input_answer or "N/A"
+
+                    # Agar foydalanuvchi javob bermagan bo'lsa, user_answer None bo'ladi
+                    if user_answer:
+                        if user_answer == question.option_select_answer or user_answer == question.option_input_answer:
+                            score += 1
+                    else:
+                        # Foydalanuvchi javob bermagan bo'lsa, `null` saqlaymiz
+                        user_answer = None
+                    
+                    select = ""
+                    
+                    if question.option_select_answer == question.option_a:
+                        select = question.option_a
+                    
+                    elif question.option_select_answer == question.option_b:
+                        select = question.option_b
+                    
+                    elif question.option_select_answer == question.option_c:
+                        select = question.option_c
+
+                    elif question.option_select_answer == question.option_d:
+                        select = question.option_d
+
+                    else:
+                        select = question.option_input_answer
+
+                    # Ensure correct_answer is valid
+                    Answer3.objects.get_or_create(  # Use Answer3 model
+                        module3_ans=module3_ans,
+                        user_answer=user_answer,
+                        correct_answer=select,  # Ensure correct_answer is not NULL or empty
+                        question=question.question
+                    )
+
+                certificate.math += score  # Update the science score (for module 3)
+                certificate.module3 = True  # Set module3 as completed
+                certificate.overall = certificate.english + certificate.math
+                certificate.save()
 
             return JsonResponse({
                 "message": "Quiz submitted successfully",
-                "score": score
+                "score": score,
+                "total_questions": questions.count(),
+                "answered_questions": len(answers),
             })
 
         except json.JSONDecodeError as e:
-            return JsonResponse({"error": "Invalid JSON data"}, status=400)
-
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
         except Exception as e:
+            print(f"Unexpected error: {str(e)}")  # Xatolikni konsolga chiqarish
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
-
     else:
-        return JsonResponse({"error": "Invalid request method"}, status=405)
+        return JsonResponse({"error": "Invalid request method."}, status=405)
 
 
 def wait3(request, pk):

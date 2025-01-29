@@ -4,7 +4,6 @@ from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from tests.models import Practice
 
-
 class Module_1(models.Model):
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
 

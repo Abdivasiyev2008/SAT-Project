@@ -10,7 +10,7 @@ from django_user_agents.utils import get_user_agent
 from module_2.calc import get_scaled_score
 from django.db import transaction
 from django.utils.timezone import now
-
+from correct.models import *
 
 @login_required
 def module_4_Detail(request, pk):
@@ -99,69 +99,112 @@ def save_time(request, pk):
 
 @csrf_exempt
 def submit_quiz(request, pk):
-    user_agent = get_user_agent(request)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            answers = data.get("answers", {})
+            print("User Answers:", answers)  # Foydalanuvchi javoblarini konsolga chiqarish
+            practice = get_object_or_404(Practice, id=pk)
 
-    # Ensure the user is on a PC or tablet
-    if user_agent.is_pc or user_agent.is_tablet:
-        if request.method == "POST":
-            try:
-                # Parse incoming JSON data
-                data = json.loads(request.body)
-                print("Received JSON data:", data)  # Debug log
-                answers = data.get("answers", {})  # Ensure we get an empty dict if no answers are provided
+            # Module 4 savollarini olish
+            questions = Module_4_Question.objects.filter(module__practice=practice)
+            if not questions.exists():
+                return JsonResponse({"error": "No questions found for this practice."}, status=404)
 
-                # Retrieve the practice and related questions
-                practice = get_object_or_404(Practice, id=pk)
-                questions = Module_4_Question.objects.filter(module__practice=practice)
-
-                if not questions.exists():
-                    return JsonResponse({"error": "No questions found for this practice."}, status=404)
-
-                # Get or create the certificate object
+            with transaction.atomic():
+                # Sertifikatni olish yoki yaratish
                 certificate, created = Certificate.objects.get_or_create(
                     practice=practice,
                     user=request.user,
-                    defaults={
-                        'math': 0,
-                        'overall': 0,
-                        'english': 0,
-                    }
+                    defaults={'english': 0, 'math': 0, 'overall': 0}
                 )
 
-                # If module4 is already completed, skip the submission
+                # Agar modul 4 allaqachon tugallangan bo'lsa
                 if certificate.module4:
                     return JsonResponse({
                         "message": "You have already completed this module.",
-                        "score": certificate.math  # Return the existing score if already completed
+                        "score": certificate.math  # Modul 4 uchun mavjud ballni qaytarish
                     })
 
-                # Calculate score based on the answers provided
                 score = 0
-                if answers:  # If there are answers, check and calculate the score
-                    for question, user_answer in zip(questions, answers.values()):
+                module4_ans = Module4_Ans.objects.create(  # Modul 4 uchun javoblar saqlash
+                    user=request.user,
+                    practice=practice
+                )
+
+                # Savollarni tekshirish va foydalanuvchi javoblarini solishtirish
+                for idx, question in enumerate(questions):
+                    user_answer = answers.get(str(idx))  # Foydalanuvchi javobini olish
+
+                    if user_answer == question.option_a:
+                        user_answer = question.option_a
+                    
+                    elif user_answer == question.option_b:
+                        user_answer = question.option_b
+                    
+                    elif user_answer == question.option_c:
+                        user_answer = question.option_c
+
+                    elif user_answer == question.option_d:
+                        user_answer = question.option_d
+
+                    elif user_answer == question.option_input_answer:
+                        user_answer = question.option_input_answer
+
+                    correct_answer = ""
+
+                    # Agar foydalanuvchi javob bergan bo'lsa
+                    if user_answer:
                         if user_answer == question.option_select_answer or user_answer == question.option_input_answer:
                             score += 1
+                    else:
+                        # Foydalanuvchi javob bermagan bo'lsa, `null` saqlaymiz
+                        user_answer = None
 
-                # Update certificate with new score
-                score = calculate_scaled_score(int(score) + int(certificate.math))  # Calculate scaled score
-                certificate.math = score
-                certificate.english = get_scaled_score(certificate.english)  # Assuming you have a method for this
-                certificate.module4 = True
+                    select = ""
+                    
+                    if question.option_select_answer == question.option_a:
+                        select = question.option_a
+                    
+                    elif question.option_select_answer == question.option_b:
+                        select = question.option_b
+                    
+                    elif question.option_select_answer == question.option_c:
+                        select = question.option_c
 
-                # Ensure there are no None values in the certificate fields
-                certificate.overall = int(certificate.math) + int(certificate.english)
-                certificate.save()
+                    elif question.option_select_answer == question.option_d:
+                        select = question.option_d
 
-                return JsonResponse({"message": "Quiz submitted successfully", "score": score})
+                    else:
+                        select = question.option_input_answer
 
-            except json.JSONDecodeError as e:
-                print("JSONDecodeError:", e)  # Debug log
-                return JsonResponse({"error": "Invalid JSON data"}, status=400)
+                    # Javobni Answer4 modeliga saqlash
+                    Answer4.objects.get_or_create(  # Answer4 modelini ishlatish
+                        module4_ans=module4_ans,
+                        user_answer=user_answer,
+                        correct_answer=select,  # To'g'ri javobni saqlash
+                        question=question.question
+                    )
 
-            except Exception as e:
-                print(f"Unexpected error: {e}")  # Debug log
-                return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+                # Hisob-kitob va scaled scoreni qo'shish
+                certificate.math += score
+                certificate.math = int(calculate_scaled_score(certificate.math))
+                certificate.english = int(get_scaled_score(certificate.english))
+                certificate.module4 = True  # Modul 4 tugallangan deb belgilash
+                certificate.overall = certificate.english + certificate.math  # Umumiy ballni hisoblash
+                certificate.save()  # Sertifikatni saqlash
 
-        return JsonResponse({"error": "Invalid request method"}, status=405)  # Only POST is allowed
+            return JsonResponse({
+                "message": "Quiz submitted successfully",
+                "score": certificate.overall,  # Xususiy bal
+                "total_questions": questions.count(),
+                "answered_questions": len(answers),
+            })
 
-    return HttpResponse("If you want to use this platform, please use a computer.")  # For mobile and other devices
+        except json.JSONDecodeError as e:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+        except Exception as e:
+            print(f"Unexpected error: {str(e)}")  # Xatolikni konsolga chiqarish
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=405)

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'module_3',
     'module_4',
     'certificate',
+    'correct',
 ]
 
 MIDDLEWARE = [
