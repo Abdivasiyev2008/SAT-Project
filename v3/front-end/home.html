@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Teacher</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/navbar.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <a href="#home-menu">
+        <div class="navbar">
+            <div class="logo-container">
+                <!-- Logo Image -->
+                <img src="images/main/logo.jpg" alt="Logo">
+                <div class="logo-text">The Teacher</div>
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button> <!-- Hamburger Menu -->
+            </div>
+    </a>
+    <div class="nav-links">
+        <a href="practices.html">Home</a>
+        <a href="#about">About</a>
+        <a href="#service-menu">Services</a>
+        <a href="#login">Login</a>
+        <a href="#video">Video</a>
+        <a href="#events">Events</a>
+        <a href="#team">Team</a>
+        <a href="#contact-menu">Contact</a>
+    </div>
+    </div>
+
+    <!-- Her Section -->
+    <div class="hero" id="home-menu">
+        <div class="hero-text">
+            <h1>Welcome to The Teacher</h1>
+            <p>Academic Synergy helping students achieve their full capacity on SAT with innovative Practice & Feedback
+                mechanisms.</p>
+            <a href="practices.html"><button class="cta-button">Get Started</button></a>
+        </div>
+        <div class="hero-illustration">
+            <img src="images/home/hero.svg" alt="Illustration">
+        </div>
+    </div>
+
+    <!-- Services Cards Section -->
+    <div class="services-container">
+        <div class="service-card">
+            <img src="https://img.icons8.com/ios/50/ffffff/retro-tv.png" alt="retro-tv" width="50" height="50" />
+            <h3>Personalized SAT Tutoring</h3>
+        </div>
+        <div class="service-card">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/bookmark.png" alt="Score Analysis" width="50"
+                height="50" />
+            <p class="card-text">Detailed Performance Reports</p>
+        </div>
+        <div class="service-card">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/ffffff/check-book.png"
+                alt="check-book" />
+            <p class="card-text">Simulated SAT Tests</p>
+        </div>
+        <div class="service-card">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/combo-chart.png" alt="Score Improvement Plans"
+                width="50" height="50" />
+            <p class="card-text">Custom Score Plans</p>
+        </div>
+    </div>
+    <!-- End Services Cards Section -->
+
+
+    <!-- Info Card -->
+    <section class="info-section">
+        <div class="info-card">
+            <h3>Who We Are</h3>
+            <p>At SAT800 | MAKON, we revolutionize SAT prep with a tailored, 1-on-1 learning experience. Our innovative
+                Practice & Feedback Mechanism (PFM) ensures every student masters each concept with precision, creating
+                a truly unique learning experience.</p>
+        </div>
+        <div class="info-card">
+            <h3>What We Do</h3>
+            <p>We simplify SAT prep with a unique, personalized approach that maximizes your score potential. Our
+                expert-led 1-on-1 sessions focus on mastering each question type with customized strategies and
+                real-time feedback, ensuring rapid progress and building confidence for exam day.</p>
+        </div>
+    </section>
+    <!-- End Info Card -->
+
+
+    <!-- Our Services Section -->
+    <center class="center" id="service-menu">
+        <h1>Our Services</h1>
+    </center>
+    <section class="services-section">
+        <div class="service-item" onclick="window.location.href='https://your-url.com';">
+            <div class="logo-box">
+                <img src="https://img.icons8.com/?size=100&id=Ly4ttc09iOon&format=png&color=000000"
+                    alt="Service 1 Logo">
+            </div>
+            <h2 class="service-heading">Personalized SAT Tutoring</h2>
+            <ul class="service-list">
+                <li>Tailored SAT preparation based on your needs</li>
+                <li>Expert tutors for a focused approach</li>
+                <li>Flexible scheduling and support</li>
+            </ul>
+            <a href="#more" class="learn-more">Read More</a>
+        </div>
+        <div class="service-item" onclick="window.location.href='https://your-url.com';">
+            <div class="logo-box">
+                <img src="https://img.icons8.com/?size=100&id=wsaXI0aea252&format=png&color=000000"
+                    alt="Service 2 Logo">
+            </div>
+            <h2 class="service-heading">Detailed Performance Reports</h2>
+            <ul class="service-list">
+                <li>Track progress with detailed reports</li>
+                <li>Understand strengths and weaknesses</li>
+                <li>Data-driven insights to improve scores</li>
+            </ul>
+            <a href="#more" class="learn-more">Read More</a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact-menu">
+        <center class="center" id="contact-menu">
+            <h1>Contact</h1>
+        </center>
+        <p>If you're interested or have something to say, feel free to reach out using the details below:</p>
+        <div class="contact-info">
+            <div class="contact-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <p><strong>Location:</strong> NYC, NY, United States</p>
+            </div>
+            <div class="contact-card">
+                <i class="fas fa-envelope"></i>
+                <p><strong>Email:</strong> <a href="mailto:sat800makon@gmail.com">sat800makon@gmail.com</a></p>
+            </div>
+            <div class="contact-card">
+                <i class="fab fa-telegram"></i>
+                <p><strong>Telegram:</strong> <a href="https://t.me/sat800makon" target="_blank">t.me/sat800makon</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; <span id="year"></span> The Teacher. All Rights Reserved.</p>
+    </footer>
+    <!-- End Footer -->
+
+    <script src="js/navbar.js"></script>
+    <script src="js/statistics.js"></script>
+
+</body>
+
+</html>

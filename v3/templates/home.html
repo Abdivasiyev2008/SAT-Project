@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Teacher</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+<style>
+    /* Global Styling */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        overflow-x: hidden;
+        /* Unified background color */
+    }
+
+    .hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+        /* Consistent hero section color */
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    .navbar {
+        /* Consistent navbar color */
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    .navbar .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    .navbar .nav-links a:hover {
+        color: #d6a5a5;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    .hero-text p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin: 10px 0;
+    }
+
+    .hero-illustration img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .cta-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-transform: uppercase;
+        margin-top: 15px;
+    }
+
+    .cta-button:hover {
+        background-color: #d6a5a5;
+        color: #fff;
+    }
+
+    .services-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .service-card {
+        flex: 1;
+        max-width: 280px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px;
+        /* Harmonized service card background */
+        margin: 10px;
+    }
+
+    .service-card img {
+        margin-bottom: 10px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .service-card h3 {
+        font-size: 1.1rem;
+        margin: 10px 0;
+    }
+
+    .info-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        /* Consistent info section background */
+        gap: 20px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .info-card {
+        width: 280px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px;
+        /* Harmonized info card background */
+        margin: 10px;
+    }
+
+    .info-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .info-card p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .services-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .service-item {
+        width: 280px;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        /* Harmonized service item background */
+        margin: 10px;
+    }
+
+    .service-heading {
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
+    .contact-section {
+        padding: 20px;
+        text-align: center;
+        /* Unified contact section color */
+    }
+
+    .contact-card {
+        width: 280px;
+        text-align: center;
+        border-radius: 10px;
+        /* Harmonized contact card background */
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero {
+            flex-direction: column;
+        }
+
+        .hero-text h1 {
+            font-size: 1.8rem;
+        }
+
+        .cta-button {
+            font-size: 0.9rem;
+            padding: 8px 16px;
+        }
+
+        .services-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        .service-card {
+            width: 100%;
+            max-width: 260px;
+            padding: 15px;
+            margin: 10px auto;
+        }
+
+        .info-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .services-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            padding: 30px 10px;
+            flex-direction: column;
+        }
+
+        .hero-text h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero-illustration img {
+            display: none;
+        }
+
+        .cta-button {
+            font-size: 0.8rem;
+        }
+
+        .services-container {
+            flex-direction: column;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .service-card {
+            width: 100%;
+            max-width: 240px;
+            padding: 10px;
+            margin: 10px auto;
+        }
+
+        footer {
+            flex-direction: column;
+            text-align: center;
+            width: 100vw;
+            /* Full viewport width */
+        }
+    }
+</style>
+
+<body>
+
+    <!-- Her Section -->
+    <div class="hero" id="home-menu">
+        <div class="hero-text">
+            <h1>Welcome to The Teacher</h1>
+            <p></p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'practice' %}"><button class="cta-button">Get Started</button></a>
+            {% else %}
+            <a href="{% url 'login' %}"><button class="cta-button">Get Started</button></a>
+            {% endif %}
+        </div>
+        <div class="hero-illustration">
+            <img src="{% static 'images/home/img.png' %}" alt="Illustration">
+        </div>
+    </div>
+
+    <!-- Services Cards Section -->
+    <div class="services-container">
+        <div class="service-card">
+            <img src="https://img.icons8.com/ios/50/ffffff/retro-tv.png" alt="retro-tv" width="50" height="50" />
+            <h3>Personalized SAT Tutoring</h3>
+        </div>
+        <div class="service-card">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/bookmark.png" alt="Score Analysis" width="50"
+                height="50" />
+            <p class="card-text">Detailed Performance Reports</p>
+        </div>
+        <div class="service-card">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/ffffff/check-book.png"
+                alt="check-book" />
+            <p class="card-text">Simulated SAT Tests</p>
+        </div>
+        <div class="service-card">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/combo-chart.png" alt="Score Improvement Plans"
+                width="50" height="50" />
+            <p class="card-text">Custom Score Plans</p>
+        </div>
+    </div>
+    <!-- End Services Cards Section -->
+
+
+    <!-- Info Card -->
+    <section class="info-section">
+        <div class="info-card">
+            <h3>Who We Are</h3>
+            <p>At The Teacher, we revolutionize SAT prep with a tailored, 1-on-1 learning experience. Our innovative
+                Practice & Feedback Mechanism (PFM) ensures every student masters each concept with precision, creating
+                a truly unique learning experience.</p>
+        </div>
+        <div class="info-card">
+            <h3>What We Do</h3>
+            <p>We simplify SAT prep with a unique, personalized approach that maximizes your score potential. Our
+                expert-led 1-on-1 sessions focus on mastering each question type with customized strategies and
+                real-time feedback, ensuring rapid progress and building confidence for exam day.</p>
+        </div>
+    </section>
+    <!-- End Info Card -->
+
+
+    <!-- Our Services Section -->
+    <center class="center" id="service-menu">
+        <h1>Our Services</h1>
+    </center>
+    <section class="services-section">
+        <div class="service-item" onclick="window.location.href='#';">
+            <div class="logo-box">
+                <img src="https://img.icons8.com/ios/50/000000/retro-tv.png" alt="retro-tv" width="50" height="50" />
+
+            </div>
+            <h2 class="service-heading">Personalized SAT Tutoring</h2>
+            <ul class="service-list">
+                <li><b>Study Plans</b>: Custom study schedules based on your strengths and weaknesses.</li>
+                <li><b>Practice Tests</b>: Real SAT test simulations to help you manage time and improve your performance.</li>
+                <li><b>Targeted Lessons</b>: Focused sessions on specific SAT sections, such as Math, Reading, and Writing.</li>
+                <li><b>Expert Feedback</b>: Detailed reviews and strategies for improving your score.</li>
+                <li><b>Group & One-on-One Tutoring</b>: Choose from group classes or private sessions to suit your learning style.</li>
+            </ul>
+        </div>
+        <div class="service-item" onclick="window.location.href='#';">
+            <div class="logo-box">
+                <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/000000/book.png" alt="book" />
+            </div>
+            <h2 class="service-heading">Detailed Performance Reports</h2>
+            <ul class="service-list">
+                <li>
+                    <b>Experienced Instructors</b>: Our tutors are certified and experienced in preparing students for
+                    both SAT and IELTS.
+                </li>
+                <li><b>Flexible Scheduling</b>: We offer both in-person and online classes, allowing you to study at
+                    your convenience.</li>
+                <li><b>Proven Results</b>: Our students consistently achieve their desired scores, opening doors to top
+                    universities and career opportunities.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact-menu">
+        <center class="center" id="contact-menu">
+            <h1>Contact</h1>
+        </center>
+        <p>If you're interested or have something to say, feel free to reach out using the details below:</p>
+        <div class="contact-info">
+            <div class="contact-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <p><strong>Location:</strong> Chilanzar d, Tashkent, Uzbekistan</p>
+            </div>
+            <div class="contact-card">
+                <i class="fas fa-envelope"></i>
+                <p><strong>Email:</strong> <br><a href="mailto:theteacher-help@mail.ru">theteacher-help@mail.ru</a></p>
+            </div>
+            <div class="contact-card">
+                <i class="fab fa-telegram"></i>
+                <p><strong>Telegram:</strong> <a href="https://t.me/theteacher_uz"
+                        target="_blank">t.me/theteacher_uz</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+</body>
+
+</html>
+{% endblock content %}
