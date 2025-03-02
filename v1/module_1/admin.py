@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Module_1, Module_1_Question
+from .models import Module_1, Module_1_Question, Time1
 
 
 class Module_1_QuestionInline(admin.TabularInline):

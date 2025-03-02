@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Module_3, Module_3_Question
-
+from .models import *
 
 class Module_3_QuestionInline(admin.TabularInline):
     model = Module_3_Question

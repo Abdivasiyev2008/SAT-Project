@@ -80,4 +80,4 @@ def get_scaled_score(score):
     elif score == 54:
         return 800
     else:
-        return None  # Agar ball 0-54 oralig'ida bo'lmasa, None qaytariladi
+        return 200

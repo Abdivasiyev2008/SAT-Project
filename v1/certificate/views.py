@@ -12,82 +12,60 @@ from django.core.files.base import ContentFile
 import base64
 from django.templatetags.static import static
 from django.contrib.staticfiles.storage import staticfiles_storage
-
+from django_user_agents.utils import get_user_agent
 
 
 # Sertifikatni olish
 def get_certificate(request, pk):
-    # Practice obyektini olish
-    practice = get_object_or_404(Practice, id=pk)
-
-    # Foydalanuvchi va praktikaga tegishli sertifikatlarni olish
-    certificate_data = Certificate.objects.filter(practice=practice, user=request.user)
-    print(certificate_data)
-
-    # Sertifikatlar topilmasa
-    if not certificate_data:
-        return render(request, 'certificate/error.html', {'error_message': 'No certificates found for this practice.'})
-
-    # Sertifikatlarni template-ga jo'natish
-    return render(request, 'certificate/certificate_list.html', {
-        'certificate_data': certificate_data,
-        'id': pk,
-        })
+    user_agent = get_user_agent(request)
+    
+    if user_agent.is_pc or user_agent.is_tablet:
+        # Practice obyektini olish
+        practice = get_object_or_404(Practice, id=pk)
+    
+        # Foydalanuvchi va praktikaga tegishli sertifikatlarni olish
+        certificate_data = Certificate.objects.filter(practice=practice, user=request.user)
+        print(certificate_data)
+    
+        # Sertifikatlar topilmasa
+        if not certificate_data:
+            return render(request, 'certificate/error.html', {'error_message': 'No certificates found for this practice.'})
+    
+        # Sertifikatlarni template-ga jo'natish
+        return render(request, 'certificate/certificate_list.html', {
+            'certificate_data': certificate_data,
+            'id': pk,
+            })
+    
+    else:
+        return HttpResponse("If you want to use this platform, please use a computer.")  # Agar mobil yoki boshqa qurilma bo'lsa
 
 
 # Rangslarni olish
 def ranks(request, pk):
-    # Practice obyektini olish
-    practice = get_object_or_404(Practice, id=pk)
+    user_agent = get_user_agent(request)
 
-    # Foydalanuvchi va praktikaga tegishli sertifikatlar bo'yicha tartiblash
-    users = Certificate.objects.filter(practice=practice, user=request.user).order_by('-overall')
+    if user_agent.is_pc or user_agent.is_tablet:
+        # Practice obyektini olish
+        practice = get_object_or_404(Practice, id=pk)
+    
+        # Foydalanuvchi va praktikaga tegishli sertifikatlar bo'yicha tartiblash
+        users = Certificate.objects.filter(practice=practice, user=request.user).order_by('-overall')
+    
+        # Sertifikatlar topilmasa
+        if not users:
+            return render(request, 'certificate/error.html', {'error_message': 'No certificates found for this practice.'})
+    
+        # Sertifikatlarni ranks.html template-ga jo'natish
+        return render(request, 'certificate/ranks.html', {'users': users})
 
-    # Sertifikatlar topilmasa
-    if not users:
-        return render(request, 'certificate/error.html', {'error_message': 'No certificates found for this practice.'})
-
-    # Sertifikatlarni ranks.html template-ga jo'natish
-    return render(request, 'certificate/ranks.html', {'users': users})
-
-
-# Sertifikatni olish
-def get_certificate(request, pk):
-    # Practice obyektini olish
-    practice = get_object_or_404(Practice, id=pk)
-
-    # Foydalanuvchi va praktikaga tegishli sertifikatlarni olish
-    certificate_data = Certificate.objects.filter(practice=practice, user=request.user)
-    print(certificate_data)
-
-    # Sertifikatlar topilmasa
-    if not certificate_data:
-        return render(request, 'certificate/error.html', {'error_message': 'No certificates found for this practice.'})
-
-    # Sertifikatlarni template-ga jo'natish
-    return render(request, 'certificate/certificate_list.html', {
-        'certificate_data': certificate_data,
-        'id': pk,
-        'user': request.user.username,
-        })
-
-
-def ranks(request, pk):
-    # Practice obyektini olish
-    practice = get_object_or_404(Practice, id=pk)
-
-    # Praktikaga tegishli barcha foydalanuvchilarni sertifikatlari bo'yicha tartiblash
-    users = Certificate.objects.filter(practice=practice).order_by('-overall')
-
-    # Agar sertifikatlar bo'lmasa ham ranks.html ni render qilish
-    return render(request, 'certificate/ranks.html', {'users': users})
+    else:
+        return HttpResponse("If you want to use this platform, please use a computer.")  # Agar mobil yoki boshqa qurilma bo'lsa
 
 
 
 def download_certificate(request, pk, username):
     practice = get_object_or_404(Practice, id=pk)
-
-    # Username orqali foydalanuvchini olish
     User = get_user_model()
     user = get_object_or_404(User, username=username)
     certificate = Certificate.objects.filter(practice=practice, user=user).first()
@@ -117,7 +95,6 @@ def download_certificate(request, pk, username):
     html_content = render_to_string('certificate/certificate_download.html', {
         'certificate': certificate,
         'qr_code': qr_code_data,
-        'image_url': image_url,
     })
 
     # Generate PDF
@@ -127,3 +104,4 @@ def download_certificate(request, pk, username):
     response['Content-Disposition'] = f'attachment; filename="sat_certificate_{certificate.user.username}.pdf"'
 
     return response
+

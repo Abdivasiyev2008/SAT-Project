@@ -30,9 +30,10 @@ class Module_3_Question(models.Model):
     option_b = models.CharField(max_length=2000, null=True, blank=True)
     option_c = models.CharField(max_length=2000, null=True, blank=True)
     option_d = models.CharField(max_length=2000, null=True, blank=True)
+    image = models.ImageField(upload_to='question/images/', null=True, blank=True)
     option_select_answer = models.CharField(max_length=1, null=True, blank=True)
     option_input_answer = models.CharField(max_length=2000, null=True, blank=True)
-    image = models.ImageField(upload_to='question/images/', null=True, blank=True)
+    explanation = RichTextField(null=True, blank=True)  # Har doim to'g'ri javob saqlanadi
 
     def __str__(self):
         return f"Question for {self.term}"
@@ -99,7 +100,7 @@ class Module_3_Question(models.Model):
 class Time3(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
-    time = models.IntegerField(default=32 * 60)  # Default 32 daqiqa soniyada
+    time = models.IntegerField(default=35 * 60)  # Default 35 daqiqa soniyada
     updated_at = models.DateTimeField(auto_now=True)  # So'nggi yangilanish vaqti
 
     def save(self, *args, **kwargs):

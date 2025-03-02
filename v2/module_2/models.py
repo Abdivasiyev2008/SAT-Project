@@ -23,7 +23,7 @@ class Module_2_Question(models.Model):
     option_c = models.CharField(max_length=2000, null=True, blank=True)
     option_d = models.CharField(max_length=2000, null=True, blank=True)
     option_select_answer = models.CharField(max_length=1, null=True, blank=True)
-    option_input_answer = models.CharField(max_length=2000, null=True, blank=True)
+    explanation = RichTextField(null=True, blank=True)  # Har doim to'g'ri javob saqlanadi
 
     def __str__(self):
         return f"Question for {self.term}"

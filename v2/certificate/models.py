@@ -7,9 +7,9 @@ from django.contrib.auth import get_user_model
 class Certificate(models.Model):
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    english = models.IntegerField()
-    math = models.IntegerField()
-    overall = models.IntegerField()
+    english = models.IntegerField(default=0)
+    math = models.IntegerField(default=0)
+    overall = models.IntegerField(default=0)
     time = models.DateTimeField(auto_now_add=True)
 
     module1 = models.BooleanField(default=False)

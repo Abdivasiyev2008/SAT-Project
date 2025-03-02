@@ -42,7 +42,7 @@ def module_4_Detail(request, pk):
         time_obj, created = Time4.objects.get_or_create(
             user=request.user,
             practice=practice,
-            defaults={"time": 32 * 60}  # 32 daqiqa
+            defaults={"time": 35 * 60}  # 35 daqiqa
         )
 
         # Saqlangan vaqtni yangilangan holda qaytarish
@@ -92,8 +92,13 @@ def save_time(request, pk):
                 time_obj.save()
 
             return JsonResponse({"message": "Time saved successfully.", "remaining_time": time_obj.time})
+        except json.JSONDecodeError as e:
+            print("JSONDecodeError:", e)  # Debug log
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+            print(f"Unexpected error: {e}")  # Debug log
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 
@@ -102,109 +107,53 @@ def submit_quiz(request, pk):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            print("Received JSON data:", data)  # Debug log
             answers = data.get("answers", {})
-            print("User Answers:", answers)  # Foydalanuvchi javoblarini konsolga chiqarish
+            if not answers:
+                return JsonResponse({"error": "No answers provided"}, status=400)
+
+            # Practice va savollarni olish
             practice = get_object_or_404(Practice, id=pk)
-
-            # Module 4 savollarini olish
             questions = Module_4_Question.objects.filter(module__practice=practice)
+
             if not questions.exists():
-                return JsonResponse({"error": "No questions found for this practice."}, status=404)
+                return JsonResponse({"error": "No questions found"}, status=404)
 
-            with transaction.atomic():
-                # Sertifikatni olish yoki yaratish
-                certificate, created = Certificate.objects.get_or_create(
-                    practice=practice,
-                    user=request.user,
-                    defaults={'english': 0, 'math': 0, 'overall': 0}
-                )
+            # Javoblarni tekshirish
+            score = 0
+            for question, user_answer in zip(questions, answers.values()):
+                if user_answer == question.option_select_answer:
+                    score += 1
 
-                # Agar modul 4 allaqachon tugallangan bo'lsa
-                if certificate.module4:
-                    return JsonResponse({
-                        "message": "You have already completed this module.",
-                        "score": certificate.math  # Modul 4 uchun mavjud ballni qaytarish
-                    })
+            # Sertifikatni yangilash yoki yaratish
+            certificate, created = Certificate.objects.get_or_create(
+                practice=practice,
+                user=request.user,
+                defaults={
+                    'math': 0,
+                    'overall': 0,
+                }
+            )
+            check, created = Checking.objects.get_or_create(
+                practice=practice,
+                user=request.user,
+            )
 
-                score = 0
-                module4_ans = Module4_Ans.objects.create(  # Modul 4 uchun javoblar saqlash
-                    user=request.user,
-                    practice=practice
-                )
+            certificate.math = calculate_scaled_score(score + certificate.math)
+            certificate.english = get_scaled_score(certificate.english)
+            certificate.overall = certificate.english + certificate.math
+            certificate.module4 = True
+            certificate.save()
+            check.save()
 
-                # Savollarni tekshirish va foydalanuvchi javoblarini solishtirish
-                for idx, question in enumerate(questions):
-                    user_answer = answers.get(str(idx))  # Foydalanuvchi javobini olish
-
-                    if user_answer == question.option_a:
-                        user_answer = question.option_a
-                    
-                    elif user_answer == question.option_b:
-                        user_answer = question.option_b
-                    
-                    elif user_answer == question.option_c:
-                        user_answer = question.option_c
-
-                    elif user_answer == question.option_d:
-                        user_answer = question.option_d
-
-                    elif user_answer == question.option_input_answer:
-                        user_answer = question.option_input_answer
-
-                    correct_answer = ""
-
-                    # Agar foydalanuvchi javob bergan bo'lsa
-                    if user_answer:
-                        if user_answer == question.option_select_answer or user_answer == question.option_input_answer:
-                            score += 1
-                    else:
-                        # Foydalanuvchi javob bermagan bo'lsa, `null` saqlaymiz
-                        user_answer = None
-
-                    select = ""
-                    
-                    if question.option_select_answer == question.option_a:
-                        select = question.option_a
-                    
-                    elif question.option_select_answer == question.option_b:
-                        select = question.option_b
-                    
-                    elif question.option_select_answer == question.option_c:
-                        select = question.option_c
-
-                    elif question.option_select_answer == question.option_d:
-                        select = question.option_d
-
-                    else:
-                        select = question.option_input_answer
-
-                    # Javobni Answer4 modeliga saqlash
-                    Answer4.objects.get_or_create(  # Answer4 modelini ishlatish
-                        module4_ans=module4_ans,
-                        user_answer=user_answer,
-                        correct_answer=select,  # To'g'ri javobni saqlash
-                        question=question.question
-                    )
-
-                # Hisob-kitob va scaled scoreni qo'shish
-                certificate.math += score
-                certificate.math = int(calculate_scaled_score(certificate.math))
-                certificate.english = int(get_scaled_score(certificate.english))
-                certificate.module4 = True  # Modul 4 tugallangan deb belgilash
-                certificate.overall = certificate.english + certificate.math  # Umumiy ballni hisoblash
-                certificate.save()  # Sertifikatni saqlash
-
-            return JsonResponse({
-                "message": "Quiz submitted successfully",
-                "score": certificate.overall,  # Xususiy bal
-                "total_questions": questions.count(),
-                "answered_questions": len(answers),
-            })
+            return JsonResponse({"message": "Quiz submitted successfully", "score": score})
 
         except json.JSONDecodeError as e:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            print("JSONDecodeError:", e)  # Debug log
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
         except Exception as e:
-            print(f"Unexpected error: {str(e)}")  # Xatolikni konsolga chiqarish
+            print(f"Unexpected error: {e}")  # Debug log
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     else:
-        return JsonResponse({"error": "Invalid request method."}, status=405)
+        return JsonResponse({"error": "Invalid request method"}, status=405)

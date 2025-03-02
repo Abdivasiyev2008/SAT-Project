@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-oyc(syq0-fj7b9inv+04%de^wmvcazq@)sj+10pku(g)ezt46^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['theteacher.uz', 'www.theteacher.uz']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # downloads apps
     'ckeditor',
     'crispy_forms',
+    'django_user_agents',
 
     # my apps
     'home',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'module_3',
     'module_4',
     'certificate',
+    'correct',
 ]
 
 MIDDLEWARE = [
@@ -63,10 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
 
 ROOT_URLCONF = 'config.urls'
 
@@ -137,11 +137,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
-STATIC_ROOT = '/home/theteach/public_html/static'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
+# Media Files 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/home/theteach/public_html/media'
+MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 
 CKEDITOR_CONFIGS = {
     'default': { 
@@ -309,3 +309,6 @@ JAZZMIN_SETTINGS = {
     # Add a language dropdown into the admin
     "language_chooser": False,
 }
+
+# Keshlash sozlamalari (majburiy emas)
+USER_AGENTS_CACHE = 'default'

@@ -2,7 +2,7 @@ def calculate_scaled_score(score):
     if 0 <= score <= 6:
         return 200
     
-    elif scoree == 7:
+    elif score == 7:
         return 250
     
     elif score == 8:
@@ -117,4 +117,4 @@ def calculate_scaled_score(score):
         return 800
     
     else:
-        return None
+        return 200

@@ -9,6 +9,7 @@ from certificate.models import Certificate, Checking
 from django_user_agents.utils import get_user_agent
 from django.db import transaction
 from correct.models import *
+from django.db import IntegrityError
 
 
 @login_required
@@ -71,150 +72,88 @@ def module_3_Detail(request, pk):
 
 @csrf_exempt
 def save_time(request, pk):
-    """AJAX handler to save the remaining time for module_3."""
+    """AJAX orqali vaqtni saqlash."""
     if request.method == "POST":
         try:
-            # Parse the JSON request body
             data = json.loads(request.body)
             remaining_time = data.get("time")
 
             if remaining_time is None:
                 return JsonResponse({"error": "Time data is missing."}, status=400)
 
-            # Retrieve the Practice object
             practice = get_object_or_404(Practice, id=pk)
 
-            # Update or create the Time3 object
+            # Vaqtni yangilash yoki yaratish
             time_obj, created = Time3.objects.get_or_create(
                 user=request.user,
                 practice=practice,
                 defaults={"time": remaining_time}
             )
-
             if not created:
-                # Update time and mark the timestamp
                 time_obj.time = remaining_time
-                time_obj.updated_at = now()
+                time_obj.updated_at = now()  # `now()` funksiyasi bilan yangilash
                 time_obj.save()
 
             return JsonResponse({"message": "Time saved successfully.", "remaining_time": time_obj.time})
+        except json.JSONDecodeError as e:
+            print("JSONDecodeError:", e)  # Debug log
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
         except Exception as e:
-            # Return error response in case of unexpected issues
-            return JsonResponse({"error": str(e)}, status=400)
-
+            print(f"Unexpected error: {e}")  # Debug log
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+
 
 @csrf_exempt
 def submit_quiz(request, pk):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            print("Received JSON data:", data)  # Debug log
             answers = data.get("answers", {})
-            print("User Answers:", answers)  # Foydalanuvchi javoblarini konsolga chiqarish
+            if not answers:
+                return JsonResponse({"error": "No answers provided"}, status=400)
+
+            # Practice va savollarni olish
             practice = get_object_or_404(Practice, id=pk)
-
-            # Change the model from Module_1_Question or Module_2_Question to Module_3_Question
             questions = Module_3_Question.objects.filter(module__practice=practice)
+
             if not questions.exists():
-                return JsonResponse({"error": "No questions found for this practice."}, status=404)
+                return JsonResponse({"error": "No questions found"}, status=404)
 
-            with transaction.atomic():
-                # Update certificate or module3 object accordingly
-                certificate, created = Certificate.objects.get_or_create(
-                    practice=practice,
-                    user=request.user,
-                    defaults={'english': 0, 'math': 0, 'overall': 0}
-                )
+            # Javoblarni tekshirish
+            score = 0
+            for question, user_answer in zip(questions, answers.values()):
+                if user_answer == question.option_select_answer:
+                    score += 1
 
-                # Change the module condition check to module3
-                if certificate.module3:
-                    return JsonResponse({
-                        "message": "You have already completed this module.",
-                        "score": certificate.math  # Adjust based on what module3 represents
-                    })
+            # Sertifikatni yangilash yoki yaratish
+            certificate, created = Certificate.objects.get_or_create(
+                practice=practice,
+                user=request.user,
+                defaults={
+                    'math': 0,
+                    'overall': 0,
+                }
+            )
 
-                score = 0
-                module3_ans = Module3_Ans.objects.create(  # Create Module3_Ans instance
-                    user=request.user,
-                    practice=practice
-                )
+            certificate.math = score
+            certificate.overall = certificate.english + certificate.math
+            certificate.save()
 
-                # Iterate through questions and check answers for module 3
-                for idx, question in enumerate(questions):
-                    user_answer = answers.get(str(idx))  # user_answer = answers.get(str(idx)) ning xavfsiz usuli
-
-                    if user_answer == question.option_a:
-                        user_answer = question.option_a
-                    
-                    elif user_answer == question.option_b:
-                        user_answer = question.option_b
-                    
-                    elif user_answer == question.option_c:
-                        user_answer = question.option_c
-
-                    elif user_answer == question.option_d:
-                        user_answer = question.option_d
-
-                    elif user_answer == question.option_input_answer:
-                        user_answer = question.option_input_answer
-
-                    # Ensure that correct_answer is never None or empty
-                    correct_answer = question.option_select_answer or question.option_input_answer or "N/A"
-
-                    # Agar foydalanuvchi javob bermagan bo'lsa, user_answer None bo'ladi
-                    if user_answer:
-                        if user_answer == question.option_select_answer or user_answer == question.option_input_answer:
-                            score += 1
-                    else:
-                        # Foydalanuvchi javob bermagan bo'lsa, `null` saqlaymiz
-                        user_answer = None
-                    
-                    select = ""
-                    
-                    if question.option_select_answer == question.option_a:
-                        select = question.option_a
-                    
-                    elif question.option_select_answer == question.option_b:
-                        select = question.option_b
-                    
-                    elif question.option_select_answer == question.option_c:
-                        select = question.option_c
-
-                    elif question.option_select_answer == question.option_d:
-                        select = question.option_d
-
-                    else:
-                        select = question.option_input_answer
-
-                    # Ensure correct_answer is valid
-                    Answer3.objects.get_or_create(  # Use Answer3 model
-                        module3_ans=module3_ans,
-                        user_answer=user_answer,
-                        correct_answer=select,  # Ensure correct_answer is not NULL or empty
-                        question=question.question
-                    )
-
-                certificate.math += score  # Update the science score (for module 3)
-                certificate.module3 = True  # Set module3 as completed
-                certificate.overall = certificate.english + certificate.math
-                certificate.save()
-
-            return JsonResponse({
-                "message": "Quiz submitted successfully",
-                "score": score,
-                "total_questions": questions.count(),
-                "answered_questions": len(answers),
-            })
+            return JsonResponse({"message": "Quiz submitted successfully", "score": score})
 
         except json.JSONDecodeError as e:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            print("JSONDecodeError:", e)  # Debug log
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
         except Exception as e:
-            print(f"Unexpected error: {str(e)}")  # Xatolikni konsolga chiqarish
+            print(f"Unexpected error: {e}")  # Debug log
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     else:
-        return JsonResponse({"error": "Invalid request method."}, status=405)
-
+        return JsonResponse({"error": "Invalid request method"}, status=405)
 
 def wait3(request, pk):
     user_agent = get_user_agent(request)

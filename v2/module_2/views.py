@@ -69,143 +69,93 @@ def module_2_Detail(request, pk):
         return HttpResponse("If you want to use this platform, please use a computer.")  # Handle non-PC devices
 
 
+
 @csrf_exempt
 def save_time(request, pk):
-    """AJAX handler to save the remaining time for module_2."""
+    """AJAX orqali vaqtni saqlash."""
     if request.method == "POST":
         try:
-            # Parse the JSON request body
             data = json.loads(request.body)
             remaining_time = data.get("time")
 
             if remaining_time is None:
                 return JsonResponse({"error": "Time data is missing."}, status=400)
 
-            # Retrieve the Practice object
             practice = get_object_or_404(Practice, id=pk)
 
-            # Update or create the Time2 object
+            # Vaqtni yangilash yoki yaratish
             time_obj, created = Time2.objects.get_or_create(
                 user=request.user,
                 practice=practice,
                 defaults={"time": remaining_time}
             )
-
             if not created:
-                # Update time and mark the timestamp
                 time_obj.time = remaining_time
-                time_obj.updated_at = now()
+                time_obj.updated_at = now()  # `now()` funksiyasi bilan yangilash
                 time_obj.save()
 
             return JsonResponse({"message": "Time saved successfully.", "remaining_time": time_obj.time})
+        except json.JSONDecodeError as e:
+            print("JSONDecodeError:", e)  # Debug log
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
         except Exception as e:
-            # Return error response in case of unexpected issues
-            return JsonResponse({"error": str(e)}, status=400)
-
+            print(f"Unexpected error: {e}")  # Debug log
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+
 
 @csrf_exempt
 def submit_quiz(request, pk):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            print("Received JSON data:", data)  # Debug log
             answers = data.get("answers", {})
-            print("User Answers:", answers)  # Foydalanuvchi javoblarini konsolga chiqarish
+            if not answers:
+                return JsonResponse({"error": "No answers provided"}, status=400)
+
+            # Practice va savollarni olish
             practice = get_object_or_404(Practice, id=pk)
-
-            # Change the model from Module_1_Question to Module_2_Question
             questions = Module_2_Question.objects.filter(module__practice=practice)
+
             if not questions.exists():
-                return JsonResponse({"error": "No questions found for this practice."}, status=404)
+                return JsonResponse({"error": "No questions found"}, status=404)
 
-            with transaction.atomic():
-                # Update certificate or module2 object accordingly
-                certificate, created = Certificate.objects.get_or_create(
-                    practice=practice,
-                    user=request.user,
-                    defaults={'english': 0, 'math': 0, 'overall': 0}
-                )
+            # Javoblarni tekshirish
+            score = 0
+            for question, user_answer in zip(questions, answers.values()):
+                if user_answer == question.option_select_answer:
+                    score += 1
 
-                # Change the module condition check to module2
-                if certificate.module2:
-                    return JsonResponse({
-                        "message": "You have already completed this module.",
-                        "score": certificate.english
-                    })
+            # Sertifikatni yangilash yoki yaratish
+            certificate, created = Certificate.objects.get_or_create(
+                practice=practice,
+                user=request.user,
+                defaults={
+                    'english': 0,
+                    'math': 0,
+                    'overall': 0,
+                }
+            )
 
-                score = 0
-                module2_ans = Module2_Ans.objects.create(  # Create Module2_Ans instance
-                    user=request.user,
-                    practice=practice
-                )
+            certificate.english += score
+            certificate.module2 = True
+            certificate.overall = certificate.english
+            certificate.save()
 
-                # Iterate through questions and check answers for module 2
-                for idx, question in enumerate(questions):
-                    user_answer = answers.get(str(idx))  # user_answer = answers.get(str(idx)) ning xavfsiz usuli
-
-                    if user_answer == question.option_a:
-                        user_answer = question.option_a
-                    
-                    elif user_answer == question.option_b:
-                        user_answer = question.option_b
-                    
-                    elif user_answer == question.option_c:
-                        user_answer = question.option_c
-
-                    elif user_answer == question.option_d:
-                        user_answer = question.option_d
-
-                    correct_answer = question.option_select_answer if question.option_select_answer else ""
-                    
-                    # Agar foydalanuvchi javob bermagan bo'lsa, user_answer None bo'ladi
-                    if user_answer:
-                        if user_answer == correct_answer:
-                            score += 1
-                    else:
-                        # Foydalanuvchi javob bermagan bo'lsa, `null` saqlaymiz
-                        user_answer = None
-                    select = ""
-                    
-                    if question.option_select_answer == question.option_a:
-                        select = question.option_a
-                    
-                    elif question.option_select_answer == question.option_b:
-                        select = question.option_b
-                    
-                    elif question.option_select_answer == question.option_c:
-                        select = question.option_c
-
-                    elif question.option_select_answer == question.option_d:
-                        select = question.option_d
-
-                    # Ensure correct_answer is never None or empty string
-                    Answer2.objects.get_or_create(  # Use Answer2 model
-                        module2_ans=module2_ans,
-                        user_answer=user_answer,
-                        correct_answer=select or "N/A",  # Ensure correct_answer is not NULL
-                        question=question.question
-                    )
-
-                certificate.english += score
-                certificate.module2 = True  # Set module2 as completed
-                certificate.overall = certificate.english
-                certificate.save()
-
-            return JsonResponse({
-                "message": "Quiz submitted successfully",
-                "score": score,
-                "total_questions": questions.count(),
-                "answered_questions": len(answers),
-            })
+            return JsonResponse({"message": "Quiz submitted successfully", "score": score})
 
         except json.JSONDecodeError as e:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            print("JSONDecodeError:", e)  # Debug log
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
         except Exception as e:
-            print(f"Unexpected error: {str(e)}")  # Xatolikni konsolga chiqarish
+            print(f"Unexpected error: {e}")  # Debug log
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     else:
-        return JsonResponse({"error": "Invalid request method."}, status=405)
+        return JsonResponse({"error": "Invalid request method"}, status=405)
 
 def timeBreak(request, pk):
     return render(request, 'time/break.html', {'id': pk})

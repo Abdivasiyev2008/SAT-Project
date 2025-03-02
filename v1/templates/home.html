@@ -3,6 +3,7 @@
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,14 +12,79 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 </head>
 <style>
-    body, .hero, .navbar, .service-item, .contact-section, footer, .navbar .nav-links {
-        background-color: #56282a;
-    }
-    .service-card, .info-card, .contact-card {
-        background-color: #ffffee31;
+    /* Global Styling */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        overflow-x: hidden;
+        /* Unified background color */
     }
 
-    .info-card p, #service-menu h1, .info-card h3, .service-heading, .service-list li, .learn-more, .contact-section h1, .contact-section p {
+    .hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+        /* Consistent hero section color */
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    .navbar {
+        /* Consistent navbar color */
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    .navbar .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    .navbar .nav-links a:hover {
+        color: #d6a5a5;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    .hero-text p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin: 10px 0;
+    }
+
+    .hero-illustration img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .cta-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-transform: uppercase;
+        margin-top: 15px;
+    }
+
+    .cta-button:hover {
+        background-color: #d6a5a5;
         color: #fff;
     }
 
@@ -102,22 +168,136 @@
         margin: 10px;
     }
 
-    .contact-section a:hover {
-        color: rgb(95, 226, 43);
+    .service-heading {
+        font-size: 1.1rem;
+        margin-top: 10px;
     }
 
+    .contact-section {
+        padding: 20px;
+        text-align: center;
+        /* Unified contact section color */
+    }
 
+    .contact-card {
+        width: 280px;
+        text-align: center;
+        border-radius: 10px;
+        /* Harmonized contact card background */
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        width: 100vw;
+        /* Full viewport width */
+        box-sizing: border-box;
+        /* Prevents overflow due to padding */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero {
+            flex-direction: column;
+        }
+
+        .hero-text h1 {
+            font-size: 1.8rem;
+        }
+
+        .cta-button {
+            font-size: 0.9rem;
+            padding: 8px 16px;
+        }
+
+        .services-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        .service-card {
+            width: 100%;
+            max-width: 260px;
+            padding: 15px;
+            margin: 10px auto;
+        }
+
+        .info-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .services-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            padding: 30px 10px;
+            flex-direction: column;
+        }
+
+        .hero-text h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero-illustration img {
+            display: none;
+        }
+
+        .cta-button {
+            font-size: 0.8rem;
+        }
+
+        .services-container {
+            flex-direction: column;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .service-card {
+            width: 100%;
+            max-width: 240px;
+            padding: 10px;
+            margin: 10px auto;
+        }
+
+        footer {
+            flex-direction: column;
+            text-align: center;
+            width: 100vw;
+            /* Full viewport width */
+        }
+    }
 </style>
 
-
 <body>
-    
+
     <!-- Her Section -->
     <div class="hero" id="home-menu">
         <div class="hero-text">
             <h1>Welcome to The Teacher</h1>
             <p></p>
+            {% if user.is_authenticated %}
             <a href="{% url 'practice' %}"><button class="cta-button">Get Started</button></a>
+            {% else %}
+            <a href="{% url 'login' %}"><button class="cta-button">Get Started</button></a>
+            {% endif %}
         </div>
         <div class="hero-illustration">
             <img src="{% static 'images/home/img.png' %}" alt="Illustration">
@@ -174,28 +354,33 @@
     <section class="services-section">
         <div class="service-item" onclick="window.location.href='#';">
             <div class="logo-box">
-            <img src="https://img.icons8.com/ios/50/000000/retro-tv.png" alt="retro-tv" width="50" height="50" />
-                
+                <img src="https://img.icons8.com/ios/50/000000/retro-tv.png" alt="retro-tv" width="50" height="50" />
+
             </div>
             <h2 class="service-heading">Personalized SAT Tutoring</h2>
             <ul class="service-list">
-                <li>Tailored SAT preparation based on your needs</li>
-                <li>Expert tutors for a focused approach</li>
-                <li>Flexible scheduling and support</li>
+                <li><b>Study Plans</b>: Custom study schedules based on your strengths and weaknesses.</li>
+                <li><b>Practice Tests</b>: Real SAT test simulations to help you manage time and improve your performance.</li>
+                <li><b>Targeted Lessons</b>: Focused sessions on specific SAT sections, such as Math, Reading, and Writing.</li>
+                <li><b>Expert Feedback</b>: Detailed reviews and strategies for improving your score.</li>
+                <li><b>Group & One-on-One Tutoring</b>: Choose from group classes or private sessions to suit your learning style.</li>
             </ul>
-            <a href="#more" class="learn-more">Read More</a>
         </div>
         <div class="service-item" onclick="window.location.href='#';">
             <div class="logo-box">
-                <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/000000/book.png" alt="book"/>
+                <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/000000/book.png" alt="book" />
             </div>
             <h2 class="service-heading">Detailed Performance Reports</h2>
             <ul class="service-list">
-                <li>Track progress with detailed reports</li>
-                <li>Understand strengths and weaknesses</li>
-                <li>Data-driven insights to improve scores</li>
+                <li>
+                    <b>Experienced Instructors</b>: Our tutors are certified and experienced in preparing students for
+                    both SAT and IELTS.
+                </li>
+                <li><b>Flexible Scheduling</b>: We offer both in-person and online classes, allowing you to study at
+                    your convenience.</li>
+                <li><b>Proven Results</b>: Our students consistently achieve their desired scores, opening doors to top
+                    universities and career opportunities.</li>
             </ul>
-            <a href="#more" class="learn-more">Read More</a>
         </div>
     </section>
 
@@ -216,7 +401,8 @@
             </div>
             <div class="contact-card">
                 <i class="fab fa-telegram"></i>
-                <p><strong>Telegram:</strong> <a href="https://t.me/theteacher_uz" target="_blank">t.me/theteacher_uz</a>
+                <p><strong>Telegram:</strong> <a href="https://t.me/theteacher_uz"
+                        target="_blank">t.me/theteacher_uz</a>
                 </p>
             </div>
         </div>

@@ -3,6 +3,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from tests.models import Practice
+import datetime
 
 class Module_1(models.Model):
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
@@ -21,14 +22,12 @@ class Module_1_Question(models.Model):
     option_c = models.CharField(max_length=2000, null=True, blank=True)
     option_d = models.CharField(max_length=2000, null=True, blank=True)
     option_select_answer = models.CharField(max_length=1, null=True, blank=True)
+    explanation = RichTextField(null=True, blank=True)  # Har doim to'g'ri javob saqlanadi
+
 
     def __str__(self):
         return f"Question for {self.term}"
 
-from django.db import models
-from django.contrib.auth import get_user_model
-from tests.models import Practice
-import datetime
 
 class Time1(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

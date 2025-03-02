@@ -1,4 +1,4 @@
-import re
+import re, datetime
 import matplotlib
 import matplotlib.pyplot as plt
 import pylab
@@ -22,16 +22,17 @@ class Module_4(models.Model):
 
 class Module_4_Question(models.Model):
     module = models.ForeignKey(Module_4, on_delete=models.CASCADE) 
-    term = models.CharField(max_length=150)
+    term = models.CharField(max_length=2000, null=True, blank=True)
     question = RichTextField(null=True, blank=True)
 
-    option_a = models.CharField(max_length=255, null=True, blank=True)
-    option_b = models.CharField(max_length=255, null=True, blank=True)
-    option_c = models.CharField(max_length=255, null=True, blank=True)
-    option_d = models.CharField(max_length=255, null=True, blank=True)
-    option_select_answer = models.CharField(max_length=1, null=True, blank=True)
-    option_input_answer = models.CharField(max_length=255, null=True, blank=True)
+    option_a = models.CharField(max_length=2000, null=True, blank=True)
+    option_b = models.CharField(max_length=2000, null=True, blank=True)
+    option_c = models.CharField(max_length=2000, null=True, blank=True)
+    option_d = models.CharField(max_length=2000, null=True, blank=True)
     image = models.ImageField(upload_to='question/images/', null=True, blank=True)
+    option_select_answer = models.CharField(max_length=1, null=True, blank=True)
+    option_input_answer = models.CharField(max_length=2000, null=True, blank=True)
+    explanation = RichTextField(null=True, blank=True)  # Har doim to'g'ri javob saqlanadi
 
     def __str__(self):
         return f"Question for {self.term}"
@@ -95,3 +96,20 @@ class Module_4_Question(models.Model):
         return sanitized
 
 
+
+class Time4(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
+    time = models.IntegerField(default=32 * 60)  # Default 32 daqiqa soniyada
+    updated_at = models.DateTimeField(auto_now=True)  # So'nggi yangilanish vaqti
+
+    def save(self, *args, **kwargs):
+        # Vaqt yangilanishini tekshirish
+        if self.pk:  # Agar obyekt avvaldan mavjud bo'lsa
+            original_time = Time4.objects.get(pk=self.pk).time
+            if self.time != original_time:
+                self.updated_at = datetime.datetime.now()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user} - {self.practice} - {self.time} seconds"

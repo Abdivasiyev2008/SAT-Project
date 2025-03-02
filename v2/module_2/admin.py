@@ -14,3 +14,4 @@ class Module_2_Admin(admin.ModelAdmin):
 
 
 admin.site.register(Module_2, Module_2_Admin)
+admin.site.register(Time2)

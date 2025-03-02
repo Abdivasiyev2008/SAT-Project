@@ -10,20 +10,72 @@
 </head>
 
 <style>
+  .abc-btn {
+  background-color: #4CAF50; /* Yashil rang */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.abc-btn.off {
+  background-color: #ccc; /* off holati uchun xuddi shunday rang */
+  cursor: not-allowed;
+}
+
+.abc-btn:hover {
+  background-color: #45a049;
+}
+
+.del-btn {
+  background-color: #f44336; /* Qizil rang */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.del-btn:hover {
+  background-color: #e53935;
+}
+
+#abcDelButtons {
+  margin-top: 10px;
+}
+
+button:focus {
+  outline: none;
+}
+
+.striked {
+  text-decoration: line-through;
+  color: #888;
+}
+
+
 </style>
+
 
 
 <body>
   <div class="content-section">
     <h1 style="display: flex; justify-content: space-between; align-items: center;">
-      <span>The Princeton Review Practice Tests Question Bank</span>
+      <span>{{ practice.name }}</span>
       <span style="display: flex; gap: 15px; align-items: center; justify-content: flex-end; padding: 5px;">
         <button style="background: none; border: none; cursor: pointer; padding: 5px;">
           <img src="{% static 'images/test/lightning.svg' %}" alt="Lightning Icon" style="width: 24px; height: 24px;">
         </button>
 
         <button id="activateBtn" style="background: none; border: none;">
-          <img id="pen-icon" src="{% static 'images/test/pen.svg' %}" alt="Pen Icon">
+          <img id="pen-icon" src="{% static 'images/test/white-pen.svg' %}" alt="Pen Icon">
+
         </button>
       </span>
 
@@ -40,7 +92,7 @@
         </div>
         <div class="detail-item">
           <strong>Set Domain:</strong>
-          <span>Writing Rules</span>
+          <span>Practice Test</span>
         </div>
         <div class="detail-item">
           <strong>Set Skill:</strong>
@@ -57,7 +109,7 @@
           <span>Module</span>
         </div>
         <div class="detail-item">
-          <strong>Writing Rules</strong>
+          <strong>Practice Test</strong>
           <span>Domain</span>
         </div>
         <div class="detail-item">
@@ -75,15 +127,19 @@
       <div class="info">
         <span class="eye-icon">&#128065;</span>
         <div id="timer" data-practice-id="{{ practice.id }}" data-remaining-time="{{ remaining_time }}"></div>
-        <div class="abc-icon">ABC</div>
+        <!-- ABC -->
+        <button class="abc-btn" id="abcBtn">
+          ABC
+        </button>
+        <!-- End ABC  -->
       </div>
     </div>
 
 
     <div class="question-container" id="text">
       <div class="question-text">
-        <div>Loading term...</div> <!-- term uchun -->
-        <div>Loading question...</div> <!-- question uchun -->
+        <div></div> <!-- term uchun -->
+        <div></div> <!-- question uchun -->
       </div>
       <div class="options-container">
         <ul class="options">
@@ -116,9 +172,9 @@
       isHighlightingActive = !isHighlightingActive;
   
       if (isHighlightingActive) {
-        document.getElementById('pen-icon').src = "{% static 'images/test/pen.svg' %}"; // Aktiv ikonka
+        document.getElementById('pen-icon').src = "{% static 'images/test/black-pen.svg' %}"; // Aktiv ikonka
       } else {
-        document.getElementById('pen-icon').src = "{% static 'images/test/pen.svg' %}"; // Oddiy ikonka
+        document.getElementById('pen-icon').src = "{% static 'images/test/white-pen.svg' %}"; // Oddiy ikonka
       }
     });
   
@@ -165,7 +221,6 @@
     document.addEventListener('mouseup', highlightSelection);
   </script>
   <!-- End Highlight -->
-  
   <!-- Time -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -234,12 +289,13 @@
 
   </script>
   <!-- End time -->
-
-  <!-- Question View -->
+  
+  <!-- End Question View -->
   <script>
     // Foydalanuvchi javoblarini saqlash uchun obyekt
     let userAnswers = {}; // { questionIndex: 'A', questionIndex: 'Some answer', ... }
-
+    let markedQuestions = new Set(); // Belgilangan savollar
+    
     document.addEventListener('DOMContentLoaded', () => {
       const totalQuestions = {{ total_questions }};
       const questions = [
@@ -247,6 +303,7 @@
         {
           text: "{{ question.term|escapejs }}",
           detail: "{{ question.question|safe }}",
+          imageUrl: "{% if question.image %} {{ question.image.url|default:'' }} {% endif %}",
           options: [
             { text: "{{ question.option_a|default:'None'|escapejs }}" },
             { text: "{{ question.option_b|default:'None'|escapejs }}" },
@@ -256,27 +313,33 @@
         },
         {% endfor %}
       ];
-
+  
       let currentQuestion = 0;
-
+  
       // Savolni yuklash funksiyasi
       function loadQuestion() {
         const question = questions[currentQuestion];
         const questionTextElement = document.querySelector('.question-text');
         const optionsContainer = document.querySelector('.options');
-
-        // Savol matnini yuklash
+  
         questionTextElement.innerHTML = `
           <div>${question.text || ''}</div>
           <div>${question.detail || ''}</div>
         `;
-
-        // Variantlarni yuklash
+  
+        if (question.imageUrl) {
+          const imageElement = document.createElement('img');
+          imageElement.src = question.imageUrl;
+          imageElement.alt = "Question Image";
+          imageElement.style.maxWidth = '100%';
+          imageElement.style.height = 'auto';
+          questionTextElement.appendChild(imageElement);
+        }
+  
         optionsContainer.innerHTML = '';
         const hasValidOptions = question.options.some(option => option.text !== "None");
-
+  
         if (!hasValidOptions) {
-          // Agar faqat matnli javob bo'lsa
           const li = document.createElement('li');
           li.innerHTML = `
             <label>
@@ -289,7 +352,6 @@
           });
           optionsContainer.appendChild(li);
         } else {
-          // Radio button variantlarini yuklash
           question.options.forEach((option, index) => {
             if (option.text !== "None") {
               const li = document.createElement('li');
@@ -307,47 +369,47 @@
             }
           });
         }
-
-        // Progressni yangilash
+  
         document.getElementById('current-question').textContent = currentQuestion + 1;
         document.getElementById('total-questions').textContent = totalQuestions;
-
-        // Navigatsiya tugmalarini yangilash
+  
         document.getElementById('prevBtn').disabled = currentQuestion === 0;
         document.getElementById('nextBtn').disabled = currentQuestion === totalQuestions - 1;
       }
-
+  
       // Paginationni yangilash funksiyasi
       function updatePagination() {
         const paginationContainer = document.getElementById('pagination');
         paginationContainer.innerHTML = '';
-
+  
         for (let i = 1; i <= totalQuestions; i++) {
           const pageLink = document.createElement('a');
           pageLink.href = "#";
           pageLink.innerText = i;
-
-          // Aktiv savolni ko'rsatish
+  
           if (i - 1 === currentQuestion) {
             pageLink.classList.add('active');
           }
-
-          // Foydalanuvchi javob bergan savollar uchun class qo'shish
+  
           if (userAnswers[i - 1]) {
             pageLink.classList.add('answered');
           }
-
+  
+          if (markedQuestions.has(i)) {
+            pageLink.classList.add('marked');
+          }
+  
           pageLink.addEventListener('click', (event) => {
             event.preventDefault();
             currentQuestion = i - 1;
             loadQuestion();
             updatePagination();
           });
-
+  
           paginationContainer.appendChild(pageLink);
         }
       }
-
+  
       // Oldingi savolga o'tish
       document.getElementById('prevBtn').addEventListener('click', () => {
         if (currentQuestion > 0) {
@@ -356,7 +418,7 @@
           updatePagination();
         }
       });
-
+  
       // Keyingi savolga o'tish
       document.getElementById('nextBtn').addEventListener('click', () => {
         if (currentQuestion < totalQuestions - 1) {
@@ -365,15 +427,14 @@
           updatePagination();
         }
       });
-
+  
       // Formni yuborish funksiyasi
       document.getElementById('finishBtn').addEventListener('click', function (e) {
-        e.preventDefault(); // Form yuborilishini to'xtatish
-
+        e.preventDefault();
+  
         const practiceId = "{{ practice.id }}";
         const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
-
-        // Javoblarni serverga yuborish
+  
         fetch(`/tests/submit-quiz/${practiceId}/module/2/`, {
           method: "POST",
           headers: {
@@ -391,76 +452,87 @@
             return response.json();
           })
           .then(data => {
-            window.location.href = `/tests/practice/${practiceId}/time/break/`; // Keyingi modulgа yo'naltirish
+            window.location.href = `/tests/practice/${practiceId}/time/break/`;
           })
           .catch(error => {
             console.error("Submission Error:", error.message);
           });
       });
-
+  
+      // Savolni belgilash funksiyasi
+      function toggleMarkForReview() {
+        console.log("Mark for Review tugmasi bosildi!");
+        const currentPage = currentQuestion + 1;
+        if (markedQuestions.has(currentPage)) {
+          markedQuestions.delete(currentPage);
+        } else {
+          markedQuestions.add(currentPage);
+        }
+        updatePagination();
+      }
+  
+      document.querySelector('.bookmark-btn').addEventListener('click', toggleMarkForReview);
+  
       // Boshlang'ich yuklash
       loadQuestion();
       updatePagination();
     });
-
   </script>
   <!-- End Question View -->
-
-  <!-- Mark For review -->
+  
+  <!-- DEL funtion of answers -->
   <script>
-    // Belgilangan savollarni saqlash uchun massiv
-    let markedQuestions = new Set();
-
-    // Savolni belgilash funksiyasi
-    function toggleMarkForReview() {
-      const currentPage = currentQuestion + 1; // Hozirgi savolning raqami
-      if (markedQuestions.has(currentPage)) {
-        markedQuestions.delete(currentPage); // Agar savol avval belgilangan bo'lsa, olib tashlash
-      } else {
-        markedQuestions.add(currentPage); // Agar belgilangan bo'lmasa, qo'shish
-      }
-      updatePagination(); // Paginationni yangilash
-    }
-
-    // Paginationni yangilash funksiyasi
-    function updatePagination() {
-      const paginationContainer = document.getElementById('pagination');
-      paginationContainer.innerHTML = '';
-
-      for (let i = 1; i <= totalQuestions; i++) {
-        const pageLink = document.createElement('a');
-        pageLink.href = "#";
-        pageLink.innerText = i;
-
-        // Agar bu savol belgilangan bo'lsa, qizil rang beriladi
-        if (markedQuestions.has(i)) {
-          pageLink.classList.add('marked');
-        }
-
-        // Hozirgi savol uchun faollikni belgilash
-        if (i - 1 === currentQuestion) {
-          pageLink.classList.add('active');
-        }
-
-        pageLink.addEventListener('click', (event) => {
-          event.preventDefault();
-          currentQuestion = i - 1;
-          loadQuestion();
-          updatePagination();
-        });
-
-        paginationContainer.appendChild(pageLink);
-      }
-    }
-
-    // DOM tayyor bo'lganda tugmani sozlash
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('.bookmark-btn').addEventListener('click', toggleMarkForReview);
-      loadQuestion();
-      updatePagination();
+      const abcBtn = document.getElementById('abcBtn');
+      const options = document.querySelectorAll('.options li');
+      let isABCActive = false;  // ABC tugmasi holatini saqlash
+  
+      // ABC tugmasini boshqarish
+      abcBtn.addEventListener('click', () => {
+        isABCActive = !isABCActive;
+  
+        options.forEach(option => {
+          let delButton = option.querySelector('.del-btn');
+          const radio = option.querySelector('input[type="radio"]');
+          
+          if (!delButton) {
+            delButton = document.createElement('button');
+            delButton.classList.add('del-btn');
+            delButton.textContent = 'X';
+            option.appendChild(delButton);
+  
+            // <del> tugmasi bosilganda chiziqni qo'shish yoki olib tashlash
+            delButton.addEventListener('click', () => {
+              if (radio) {
+                if (radio.parentElement.style.textDecoration === 'line-through') {
+                  radio.parentElement.style.textDecoration = '';  // Chizig'ini olib tashlash
+                  radio.disabled = false;  // Tanlashni yoqish
+                } else {
+                  radio.parentElement.style.textDecoration = 'line-through';  // Chizish
+                  radio.disabled = true;  // Tanlashni bloklash
+                }
+              }
+            });
+          }
+  
+          // ABC tugmasi faollashganda tugmani ko'rsatish, bo'lmasa yashirish
+          delButton.style.display = isABCActive ? 'inline-block' : 'none';
+  
+          // Agar ABC tugmasi off bo'lsa
+          if (!isABCActive) {
+            // Chiziqlarni saqlash
+            // radio.disabled = true;  // Tanlashni bloklash
+          } else {
+            // Chiziq bo'lsa, radio button'ni bloklash
+            if (radio.parentElement.style.textDecoration === 'line-through') {
+              radio.disabled = true;  // Tanlashni bloklash
+            }
+          }
+        });
+      });
     });
   </script>
-  <!-- End Mark For review -->
+  <!-- End DEL funtion of answers -->
 
   <!-- Finish Btn -->
   <script>
@@ -529,6 +601,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 
 </html>

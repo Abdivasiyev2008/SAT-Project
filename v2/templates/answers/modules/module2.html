@@ -1,125 +1,490 @@
-{% block content %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 3</title>
-    <style>
-        /* Umumiy body uchun stil */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f5f5, #e3f2fd);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* Savol va javoblar konteyneri */
-        .container {
-            width: 90%;
-            max-width: 900px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        /* Savol sarlavhasi */
-        h1 {
-            color: #333;
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-
-        /* Har bir javob uchun umumiy uslub */
-        p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-        /* Foydalanuvchi javobi */
-        .user-answer {
-            background-color: #ffeb3b;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        /* To'g'ri javob */
-        .correct-answer {
-            background-color: #4caf50;
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Har bir savolni ajratib ko'rsatish */
-        .question-container {
-            margin-bottom: 30px;
-        }
-
-        /* Button uchun stil */
-        .submit-button {
-            background-color: #6200ea;
-            color: white;
-            font-size: 1.1em;
-            padding: 12px 25px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
-            margin-top: 20px;
-        }
-
-        .submit-button:hover {
-            background-color: #3700b3;
-        }
-
-        /* FadeIn animatsiyasi */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module - 1</title>
+  <link rel="stylesheet" href="{% static 'css/css.css' %}">
 </head>
 
+<style>
+  .abc-btn {
+  background-color: #4CAF50; /* Yashil rang */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.abc-btn.off {
+  background-color: #ccc; /* off holati uchun xuddi shunday rang */
+  cursor: not-allowed;
+}
+
+.abc-btn:hover {
+  background-color: #45a049;
+}
+
+.del-btn {
+  background-color: #f44336; /* Qizil rang */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.del-btn:hover {
+  background-color: #e53935;
+}
+
+#abcDelButtons {
+  margin-top: 10px;
+}
+
+button:focus {
+  outline: none;
+}
+
+.striked {
+  text-decoration: line-through;
+  color: #888;
+}
+
+
+</style>
+
+
 <body>
-    <div class="container">
-        {% for answers_data in answers_data %}
-        <div class="question-container">
-            <h1>Question: {{ answers_data.question | safe }}</h1>
-            <p class="user-answer">Your answer: {{ answers_data.user_answer | safe }}</p>
-            <p class="correct-answer">Correct Answer: {{ answers_data.correct_answer | safe }}</p>
+  <div class="content-section">
+    <h1 style="display: flex; justify-content: space-between; align-items: center;">
+      <span class="question-title">{{ practice.name }}</span>
+      <span style="display: flex; gap: 15px; align-items: center; justify-content: flex-end; padding: 5px;">
+        <button style="background: none; border: none; cursor: pointer; padding: 5px;">
+          <img src="{% static 'images/test/lightning.svg' %}" alt="Lightning Icon" style="width: 24px; height: 24px;">
+        </button>
+
+        <button id="activateBtn" style="background: none; border: none;">
+          <img id="pen-icon" src="{% static 'images/test/white-pen.svg' %}" alt="Pen Icon">
+        </button>
+      </span>
+
+    </h1>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+      <div class="details" style="width: 46%; margin-bottom: 10px;">
+        <div class="detail-item">
+          <strong>Total Questions:</strong>
+          <span id="total-questions-1"></span>
         </div>
-        {% endfor %}
-        <center>
-            <a class="submit-button" href="/tests/answers/{{ id }}/3/">Module 3</a> <!-- Bu yerda button qo'shildi -->
-        </center>
+        <div class="detail-item">
+          <strong>Set Module:</strong>
+          <span>English</span>
+        </div>
+        <div class="detail-item">
+          <strong>Set Domain:</strong>
+          <span>Practice Test</span>
+        </div>
+        <div class="detail-item">
+          <strong>Set Skill:</strong>
+          <span>Complete Sentences</span>
+        </div>
+        <div class="detail-item">
+          <strong>Set Mark:</strong>
+          <span>All</span>
+        </div>
+      </div>
+      <div class="details" style="width: 43%; text-align: right; margin-bottom: 10px;">
+        <div class="detail-item">
+          <strong>English</strong>
+          <span>Module</span>
+        </div>
+        <div class="detail-item">
+          <strong>Practice Test</strong>
+          <span>Domain</span>
+        </div>
+        <div class="detail-item">
+          <strong>Complete Sentences</strong>
+          <span>Skill</span>
+        </div>
+      </div>
     </div>
-    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <div class="mark-for-review" style="width: 42.5%; margin-left: auto;">
+      <button class="bookmark-btn">
+        <img src="{% static 'images/test/save.svg' %}" alt="">
+        Mark for Review
+      </button>
+      <div class="info">
+        <span class="eye-icon">&#128065;</span>
+        <div id="timer">00:00</div>
+        <!-- ABC tugmasi -->
+        <button class="abc-btn" id="abcBtn">
+          ABC
+        </button>
+
+      </div>
+    </div>
+
+
+    <div class="question-container" id="text">
+      <div class="question-text">
+        <div></div> <!-- term uchun -->
+        <div></div> <!-- question uchun -->
+      </div>
+      <div class="options-container">
+        <ul class="options">
+          <!-- Options dynamically loaded -->
+        </ul>
+      </div>
+    </div>
+
+
+    <div id="pagination" class="pagination" style="padding-top: 10px;"></div>
+    <div class="footer">
+      <button class="explanation-btn" id="explanationBtn">Explanation</button>
+
+      <div class="progress">Question <span id="current-question">1</span> / <span id="total-questions">0</span></div>
+      <div class="nav-buttons">
+        <button id="prevBtn" disabled>&lt; Back</button>
+        <button id="nextBtn">Next &gt;</button>
+        <button id="finishBtn" type="submit">Finish</button>
+      </div>
+    </div>
+    <div class="explanation-text" style="display: none;">
+    </div>
+  </div>
+
+  <!-- Highlight -->
+  <script>
+    let isHighlightingActive = false;
   
+    // Highlight rejimini yoqish yoki o'chirish
+    document.getElementById('activateBtn').addEventListener('click', () => {
+      isHighlightingActive = !isHighlightingActive;
+  
+      if (isHighlightingActive) {
+        document.getElementById('pen-icon').src = "{% static 'images/test/black-pen.svg' %}"; // Aktiv ikonka
+      } else {
+        document.getElementById('pen-icon').src = "{% static 'images/test/white-pen.svg' %}"; // Oddiy ikonka
+      }
+    });
+  
+    // Tanlangan matnni belgilash funksiyasi
+    function highlightSelection() {
+      if (!isHighlightingActive) return; // Agar rejim aktiv bo'lmasa, hech narsa qilmaydi
+  
+      const selection = window.getSelection();
+      if (selection.rangeCount === 0 || selection.isCollapsed) return; // Tanlov yo'q bo'lsa, qaytish
+  
+      const range = selection.getRangeAt(0); // Tanlangan diapazonni olish
+      const selectedText = range.toString(); // Tanlangan matnni olish
+  
+      // Faqat id="text" bo'lgan element ichidagi matnni bo'yash
+      const textElement = document.getElementById('text');
+      if (!textElement.contains(range.startContainer)) return; // Agar tanlangan matn id="text" ichida bo'lmasa, hech narsa qilmaydi
+  
+      // Tanlangan matn ustidan chizish (oldingi bo'yashni olib tashlash)
+      const existingSpan = range.startContainer.parentNode;
+      if (existingSpan && existingSpan.style.backgroundColor === 'yellow') {
+        // Agar matn allaqachon bo'yalgan bo'lsa, sariq rangni olib tashlash
+        existingSpan.style.backgroundColor = ''; // Rangni olib tashlash
+        existingSpan.style.color = ''; // Matn rangini olib tashlash
+        existingSpan.style.padding = ''; // Paddingni olib tashlash
+        existingSpan.style.borderRadius = ''; // Border radiusni olib tashlash
+        return; // Endi bo'yashni davom ettirmang
+      }
+  
+      // Yangi bo'yash uchun span elementi yaratish
+      const span = document.createElement('span');
+      span.style.backgroundColor = 'yellow'; // Rangni sariq qilish
+      span.style.color = 'black'; // Matn rangi qora
+      span.style.padding = '2px';
+      span.style.borderRadius = '2px';
+      span.textContent = selectedText; // Tanlangan matnni o'zgartirmasdan qo'shish
+  
+      range.deleteContents(); // Tanlangan matnni o'chirish
+      range.insertNode(span); // Span elementini qo'shish
+  
+      selection.removeAllRanges(); // Tanlovni tozalash
+    }
+  
+    // Hujjatga quloq soluvchi qo'shish
+    document.addEventListener('mouseup', highlightSelection);
+  </script>
+  <!-- End Highlight -->
+  
+  <script>
+    // Foydalanuvchi javoblarini saqlash uchun obyekt
+    let userAnswers = {}; // { questionIndex: 'A', questionIndex: 'Some answer', ... }
+    let markedQuestions = new Set(); // Belgilangan savollar
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const totalQuestions = {{ total_questions }};
+      const questions = [
+        {% for question in questions %}
+        {
+          text: "{{ question.term|escapejs }}",
+          detail: "{{ question.question|safe }}",
+          explanation: "{{ question.explanation|safe }}",
+          imageUrl: "{% if question.image %} {{ question.image.url|default:'' }} {% endif %}",
+          options: [
+          {% if "A" == question.option_select_answer %}
+              { text: "<span style='color: green;'>{{ question.option_a|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_b|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_c|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_d|default:'None'|escapejs }}</span>" },
+
+          {% elif "B" == question.option_select_answer %}
+              { text: "<span>{{ question.option_a|default:'None'|escapejs }}</span>" },
+              { text: "<span style='color: green;'>{{ question.option_b|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_c|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_d|default:'None'|escapejs }}</span>" },
+          
+          {% elif "C" == question.option_select_answer %}
+              { text: "<span>{{ question.option_a|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_b|default:'None'|escapejs }}</span>" },
+              { text: "<span style='color: green;'>{{ question.option_c|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_d|default:'None'|escapejs }}</span>" },
+              
+          {% elif "D" == question.option_select_answer %}
+              { text: "<span>{{ question.option_a|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_b|default:'None'|escapejs }}</span>" },
+              { text: "<span>{{ question.option_c|default:'None'|escapejs }}</span>" },
+              { text: "<span style='color: green;'>{{ question.option_d|default:'None'|escapejs }}</span>" },
+          {% endif %}
+          ]
+        },
+        {% endfor %}
+      ];
+  
+      let currentQuestion = 0;
+  
+      // Savolni yuklash funksiyasi
+      function loadQuestion() {
+        const question = questions[currentQuestion];
+        const questionTextElement = document.querySelector('.question-text');
+        const Explanation = document.querySelector('.explanation-text');
+        const optionsContainer = document.querySelector('.options');
+        // Get references to the button and explanation div
+        questionTextElement.innerHTML = `
+          <div>${question.text || ''}</div>
+          <div>${question.detail || ''}</div>
+        `;
+        
+        Explanation.innerHTML = `
+          <div>${question.explanation || ''}</div>
+        `;
+        if (question.imageUrl) {
+          const imageElement = document.createElement('img');
+          imageElement.src = question.imageUrl;
+          imageElement.alt = "Question Image";
+          imageElement.style.maxWidth = '100%';
+          imageElement.style.height = 'auto';
+          questionTextElement.appendChild(imageElement);
+        }
+  
+        optionsContainer.innerHTML = '';
+        const hasValidOptions = question.options.some(option => option.text !== "None");
+  
+        if (!hasValidOptions) {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <label>
+              <input type="text" name="answer" placeholder="{{ question.option_input_answer }}" 
+              style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" 
+              value="${userAnswers[currentQuestion] || ''}">
+            </label>`;
+          li.querySelector('input[type="text"]').addEventListener('input', (e) => {
+            userAnswers[currentQuestion] = e.target.value;
+          });
+          optionsContainer.appendChild(li);
+        } else {
+          question.options.forEach((option, index) => {
+            if (option.text !== "None") {
+              const li = document.createElement('li');
+              li.innerHTML = `
+                <label>
+                  <input type="radio" name="answer" value="${String.fromCharCode(65 + index)}" ${
+                userAnswers[currentQuestion] === String.fromCharCode(65 + index) ? 'checked' : ''
+              }>
+                  ${String.fromCharCode(65 + index)}) ${option.text}
+                </label>`;
+              li.querySelector('input[type="radio"]').addEventListener('change', (e) => {
+                userAnswers[currentQuestion] = e.target.value;
+              });
+              optionsContainer.appendChild(li);
+            }
+          });
+        }
+  
+        document.getElementById('current-question').textContent = currentQuestion + 1;
+        document.getElementById('total-questions').textContent = totalQuestions;
+  
+        document.getElementById('prevBtn').disabled = currentQuestion === 0;
+        document.getElementById('nextBtn').disabled = currentQuestion === totalQuestions - 1;
+      }
+
+      // Explanation
+      const explanationBtn = document.getElementById('explanationBtn');
+      const explanationText = document.querySelector('.explanation-text');
+
+      // Add click event listener to toggle visibility
+      explanationBtn.addEventListener('click', function() {
+        // Toggle the display of the explanation
+        if (explanationText.style.display === 'none' || explanationText.style.display === '') {
+          explanationText.style.display = 'block'; // Show explanation
+        
+        } 
+        
+        else {
+            explanationText.style.display = 'none'; // Hide explanation
+          }
+        });
+
+        // Insert your explanation content here
+        const question = { explanation: 'This is the explanation text.' }; // Example explanation
+        explanationText.innerHTML = `<div>${question.explanation || ''}</div>`;
+      
+      // End Explanation
+ 
+      // Paginationni yangilash funksiyasi
+      function updatePagination() {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+  
+        for (let i = 1; i <= totalQuestions; i++) {
+          const pageLink = document.createElement('a');
+          pageLink.href = "#";
+          pageLink.innerText = i;
+  
+          if (i - 1 === currentQuestion) {
+            pageLink.classList.add('active');
+          }
+  
+          if (userAnswers[i - 1]) {
+            pageLink.classList.add('answered');
+          }
+  
+          if (markedQuestions.has(i)) {
+            pageLink.classList.add('marked');
+          }
+  
+          pageLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            currentQuestion = i - 1;
+            loadQuestion();
+            updatePagination();
+          });
+  
+          paginationContainer.appendChild(pageLink);
+        }
+      }
+  
+      // Oldingi savolga o'tish
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        if (currentQuestion > 0) {
+          currentQuestion--;
+          loadQuestion();
+          updatePagination();
+        }
+      });
+  
+      // Keyingi savolga o'tish
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        if (currentQuestion < totalQuestions - 1) {
+          currentQuestion++;
+          loadQuestion();
+          updatePagination();
+        }
+      });
+  
+
+      // Savolni belgilash funksiyasi
+      function toggleMarkForReview() {
+        console.log("Mark for Review tugmasi bosildi!");
+        const currentPage = currentQuestion + 1;
+        if (markedQuestions.has(currentPage)) {
+          markedQuestions.delete(currentPage);
+        } else {
+          markedQuestions.add(currentPage);
+        }
+        updatePagination();
+      }
+  
+      document.querySelector('.bookmark-btn').addEventListener('click', toggleMarkForReview);
+  
+      // Boshlang'ich yuklash
+      loadQuestion();
+      updatePagination();
+    });
+  </script>
+  
+  <!-- DEL funtion of answers -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const abcBtn = document.getElementById('abcBtn');
+      const options = document.querySelectorAll('.options li');
+      let isABCActive = false;  // ABC tugmasi holatini saqlash
+  
+      // ABC tugmasini boshqarish
+      abcBtn.addEventListener('click', () => {
+        isABCActive = !isABCActive;
+  
+        options.forEach(option => {
+          let delButton = option.querySelector('.del-btn');
+          const radio = option.querySelector('input[type="radio"]');
+          
+          if (!delButton) {
+            delButton = document.createElement('button');
+            delButton.classList.add('del-btn');
+            delButton.textContent = 'X';
+            option.appendChild(delButton);
+  
+            // <del> tugmasi bosilganda chiziqni qo'shish yoki olib tashlash
+            delButton.addEventListener('click', () => {
+              if (radio) {
+                if (radio.parentElement.style.textDecoration === 'line-through') {
+                  radio.parentElement.style.textDecoration = '';  // Chizig'ini olib tashlash
+                  radio.disabled = false;  // Tanlashni yoqish
+                } else {
+                  radio.parentElement.style.textDecoration = 'line-through';  // Chizish
+                  radio.disabled = true;  // Tanlashni bloklash
+                }
+              }
+            });
+          }
+  
+          // ABC tugmasi faollashganda tugmani ko'rsatish, bo'lmasa yashirish
+          delButton.style.display = isABCActive ? 'inline-block' : 'none';
+  
+          // Agar ABC tugmasi off bo'lsa
+          if (!isABCActive) {
+            // Chiziqlarni saqlash
+            // radio.disabled = true;  // Tanlashni bloklash
+          } else {
+            // Chiziq bo'lsa, radio button'ni bloklash
+            if (radio.parentElement.style.textDecoration === 'line-through') {
+              radio.disabled = true;  // Tanlashni bloklash
+            }
+          }
+        });
+      });
+    });
+  </script>
+  <!-- End DEL funtion of answers -->
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 
 </html>
-
-{% endblock content %}
